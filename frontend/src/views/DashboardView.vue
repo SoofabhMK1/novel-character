@@ -71,8 +71,12 @@
             </div>
           </template>
           <div class="quick-actions">
-            <el-button type="primary" size="large" style="width: 100%;">+ 新建角色</el-button>
-            <el-button size="large" style="width: 100%; margin-top: 10px;">查看所有角色</el-button>
+            <router-link to="/characters/create" style="width: 100%; display: block;">
+              <el-button type="primary" size="large" style="width: 100%;">+ 新建角色</el-button>
+            </router-link>
+            <router-link to="/characters" style="width: 100%; display: block; margin-top: 10px;">
+              <el-button size="large" style="width: 100%;">查看所有角色</el-button>
+            </router-link>
           </div>
         </el-card>
       </el-col>

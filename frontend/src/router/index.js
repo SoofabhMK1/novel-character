@@ -16,12 +16,23 @@ const routes = [
     // 这对于优化应用的初始加载速度非常有帮助
     component: () => import('../views/CharacterListView.vue'),
   },
-  // 未来我们可以在这里添加角色详情页的路由
-  // {
-  //   path: '/characters/:id',
-  //   name: 'CharacterDetail',
-  //   component: () => import('../views/CharacterDetailView.vue'),
-  // }
+  // --- 新增的动态路由规则 ---
+  {
+    // 路径中包含一个动态片段 :id
+    path: '/characters/:id',
+    name: 'CharacterDetail',
+    component: () => import('../views/CharacterDetailView.vue'),
+  },
+  {
+    path: '/characters/create',
+    name: 'CharacterCreate',
+    component: () => import('../views/CharacterFormView.vue'),
+  },
+  {
+    path: '/characters/:id/edit',
+    name: 'CharacterEdit',
+    component: () => import('../views/CharacterFormView.vue'),
+  },
 ];
 
 // 创建路由实例

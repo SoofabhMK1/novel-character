@@ -20,9 +20,11 @@
         <el-table-column prop="occupation" label="职业" />
         <el-table-column prop="status" label="状态" width="120" />
         <el-table-column fixed="right" label="操作" width="150">
-          <template #default>
-            <el-button type="primary" link size="small">编辑</el-button>
-            <el-button type="danger" link size="small">删除</el-button>
+          <template #default="scope">
+            <router-link :to="`/characters/${scope.row.id}`" style="text-decoration: none;">
+              <el-button type="primary" link size="small">查看详情</el-button>
+            </router-link>
+            <el-button type="danger" link size="small" style="margin-left: 10px;">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
