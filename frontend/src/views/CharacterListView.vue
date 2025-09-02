@@ -25,16 +25,21 @@
             </el-avatar>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="姓名" width="180" />
+        <el-table-column prop="name" label="姓名" min-width="180" />
         <el-table-column prop="race" label="种族" width="120" />
-        <el-table-column prop="occupation" label="职业" />
+        <el-table-column prop="occupation" label="职业" width="150" />
         <el-table-column prop="status" label="状态" width="120" />
-        <el-table-column fixed="right" label="操作" width="150">
+        <el-table-column fixed="right" label="操作" width="200">
           <template #default="scope">
-            <router-link :to="`/characters/${scope.row.id}`" style="text-decoration: none;">
-              <el-button type="primary" link size="small">查看详情</el-button>
-            </router-link>
-            <el-button type="danger" link size="small" style="margin-left: 10px;">删除</el-button>
+            <div class="action-buttons">
+              <router-link :to="`/characters/${scope.row.id}`" style="text-decoration: none;">
+                <el-button type="primary" link size="small">查看详情</el-button>
+              </router-link>
+              <router-link :to="`/characters/${scope.row.id}/edit`" style="text-decoration: none;">
+                <el-button type="primary" link size="small">编辑</el-button>
+              </router-link>
+              <el-button type="danger" link size="small">删除</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -115,5 +120,10 @@ onMounted(() => {
   margin-top: 20px;
   display: flex;
   justify-content: flex-end;
+}
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* 使用 gap 属性优雅地添加间距 */
 }
 </style>

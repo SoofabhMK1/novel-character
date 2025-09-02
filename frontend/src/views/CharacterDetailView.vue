@@ -4,6 +4,13 @@
       <template #content>
         <span class="text-large font-600 mr-3"> 角色详情 </span>
       </template>
+      <template #extra>
+        <div class="flex items-center">
+          <router-link :to="`/characters/${characterId}/edit`">
+            <el-button type="primary" class="ml-2">编辑</el-button>
+          </router-link>
+        </div>
+      </template>
     </el-page-header>
 
     <el-card v-if="character" shadow="never">
