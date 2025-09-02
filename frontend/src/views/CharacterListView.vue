@@ -17,6 +17,14 @@
         border
         stripe
       >
+        <el-table-column label="头像" width="80" align="center">
+          <template #default="scope">
+            <el-avatar shape="square" :size="50" :src="scope.row.image_url">
+              <!-- 图片加载失败时的后备内容 -->
+              <img src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png" />
+            </el-avatar>
+          </template>
+        </el-table-column>
         <el-table-column prop="name" label="姓名" width="180" />
         <el-table-column prop="race" label="种族" width="120" />
         <el-table-column prop="occupation" label="职业" />

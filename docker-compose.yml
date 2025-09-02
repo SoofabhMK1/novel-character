@@ -25,6 +25,8 @@ services:
       - db
     networks:
       - novel_network
+    volumes:
+      - ./data/character_images:/app/media/character_images
 
   # 反向代理与 Web 服务器 (Nginx)
   nginx:
@@ -33,6 +35,8 @@ services:
       context: .
       # Dockerfile 的路径是 nginx/Dockerfile
       dockerfile: ./nginx/Dockerfile
+    volumes:
+      - ./data/character_images:/usr/share/nginx/html/media/character_images
     container_name: novel_nginx_service
     ports:
       - "80:80"

@@ -6,7 +6,7 @@ WORKDIR /app
 
 # 复制 frontend 目录下的 package.json 和 lock 文件
 COPY ./frontend/package*.json ./
-
+RUN npm config set registry https://registry.npmmirror.com
 # 安装前端依赖
 RUN npm install
 

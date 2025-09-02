@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from typing import Any, Dict, List, Optional
-
+from pydantic import computed_field
 from pydantic import BaseModel, ConfigDict
 
 from app.core.enums import (Alignment, BuildType, Gender, Race, RelationshipType,
@@ -111,6 +111,18 @@ class Character(CharacterBase):
     id: uuid.UUID
     created_at: datetime
     updated_at: datetime
+
+    # --- 新增：动态计算图片 URL ---
+    @computed_field
+    @property
+    def image_url(self) -> Optional[str]:
+        """
+        根据 image_filename 动态生成完整的图片 URL。
+        """
+        if self.image_filename:
+            # 这里的路径前缀 /media/character_images/ 必须与 Nginx 配置 和 卷挂载路径 对应
+            return f"/media/character_images/{self.image_filename}"
+        return None
 
     model_config = ConfigDict(from_attributes=True)
 

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import _ from 'lodash';
 
 // 创建一个 Axios 实例，我们可以为它设置一些默认值
 const apiClient = axios.create({
@@ -30,12 +31,26 @@ export default {
 
   // 创建一个新角色
   createCharacter(characterData) {
-    return apiClient.post('/characters/', characterData);
+    // 使用 lodash 的 pick 方法，只挑选出后端 CreateSchema 需要的字段
+    const dataToSend = _.pick(characterData, [
+      'name', 'nickname', 'age', 'gender', 'race', 'occupation',
+      'height_cm', 'build', 'status', 'alignment', 'image_filename',
+      'measurements', 'personality_details', 'appearance_details',
+      'background_details', 'speech_patterns'
+    ]);
+    return apiClient.post('/characters/', dataToSend);
   },
 
-  // 更新一个角色
   updateCharacter(id, updateData) {
-    return apiClient.put(`/characters/${id}`, updateData);
+    // 对于更新，我们通常发送所有字段，但也可以进行净化
+    // 关键是确保我们发送的是 image_filename 而不是 image_url
+    const dataToSend = _.pick(updateData, [
+      'name', 'nickname', 'age', 'gender', 'race', 'occupation',
+      'height_cm', 'build', 'status', 'alignment', 'image_filename',
+      'measurements', 'personality_details', 'appearance_details',
+      'background_details', 'speech_patterns'
+    ]);
+    return apiClient.put(`/characters/${id}`, dataToSend);
   },
 
   // 删除一个角色
