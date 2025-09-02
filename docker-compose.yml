@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # 数据库服务 (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    container_name: novel_db_service
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - novel_db_data:/var/lib/postgresql/data
+    networks:
+      - novel_network
+
+  # 后端服务 (FastAPI)
+  backend:
+    build:
+      context: ./backend
+    container_name: novel_backend_service
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+    networks:
+      - novel_network
+
+  # 反向代理与 Web 服务器 (Nginx)
+  nginx:
+    build:
+      # 构建上下文是项目根目录
+      context: .
+      # Dockerfile 的路径是 nginx/Dockerfile
+      dockerfile: ./nginx/Dockerfile
+    container_name: novel_nginx_service
+    ports:
+      - "80:80"
+    depends_on:
+      - backend # Nginx 只需依赖后端即可
+    networks:
+      - novel_network
+
+volumes:
+  novel_db_data:
+    driver: local
+
+networks:
+  novel_network:
+    driver: bridge

@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+*.env
+.env.*
+
+# IDE / Editor specific
+.vscode/
+.idea/
+*.swp
+
+# Docker
+docker-compose.override.yml
+
+# Frontend dependencies
+frontend/node_modules/
+frontend/dist/
+frontend/.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Database data volume (虽然是外部的，但以防万一)
+novel_db_data/

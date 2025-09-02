@@ -1,0 +1,16 @@
+# FastAPI & ASGI Server
+fastapi
+uvicorn[standard]
+
+# Database & ORM
+sqlalchemy
+psycopg2-binary
+alembic
+
+# Data Validation & Settings
+pydantic
+python-dotenv
+pydantic-settings
+
+# For file uploads (will be used for images)
+python-multipart
