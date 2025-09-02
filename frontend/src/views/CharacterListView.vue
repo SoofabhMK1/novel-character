@@ -4,7 +4,9 @@
       <template #header>
         <div class="card-header">
           <span>角色列表</span>
-          <el-button type="primary">+ 新建角色</el-button>
+          <router-link to="/characters/create">
+            <el-button type="primary">+ 新建角色</el-button>
+          </router-link>
         </div>
       </template>
 

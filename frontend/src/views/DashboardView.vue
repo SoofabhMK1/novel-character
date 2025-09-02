@@ -52,9 +52,11 @@
                 <span>{{ formatTimeAgo(scope.row.updated_at) }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="操作">
-              <template #default>
-                <el-button type="primary" link>查看详情</el-button>
+            <el-table-column label="操作" width="120" align="center">
+              <template #default="scope">
+                <router-link :to="`/characters/${scope.row.id}`" style="text-decoration: none;">
+                  <el-button type="primary" link>查看详情</el-button>
+                </router-link>
               </template>
             </el-table-column>
           </el-table>

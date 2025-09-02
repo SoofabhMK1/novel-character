@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1 import characters
+from app.api.v1 import characters, utils 
 
 # 创建 FastAPI 应用实例
 app = FastAPI(
@@ -44,4 +44,10 @@ app.include_router(
     characters.router, 
     prefix="/api/v1/characters", 
     tags=["Characters"]
+)
+
+app.include_router(
+    utils.router,
+    prefix="/api/v1/utils",
+    tags=["Utils"]
 )

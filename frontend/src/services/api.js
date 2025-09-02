@@ -43,5 +43,7 @@ export default {
     return apiClient.delete(`/characters/${id}`);
   },
   
-  // 你还可以在这里添加其他 API，比如获取角色关系等
+  getEnums() {
+    return apiClient.get('/utils/enums');
+  },
 };
