@@ -12,9 +12,15 @@ const apiClient = axios.create({
 
 // 导出封装好的 API 请求函数
 export default {
+
+  // --- 新增：获取统计数据 ---
+  getDashboardStats() {
+    return apiClient.get('/characters/stats');
+  },
+
   // 获取角色列表
-  getCharacters(skip = 0, limit = 100) {
-    return apiClient.get(`/characters/?skip=${skip}&limit=${limit}`);
+  getCharacters({ skip = 0, limit = 100, sortBy = 'updated_at', order = 'desc' } = {}) {
+    return apiClient.get(`/characters/?skip=${skip}&limit=${limit}&sort_by=${sortBy}&order=${order}`);
   },
 
   // 通过 ID 获取单个角色
