@@ -5,9 +5,6 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/ && \
-    pip config set global.timeout 60
-
 RUN pip wheel --no-cache-dir --wheel-dir /wheels -r requirements.txt
 
 
