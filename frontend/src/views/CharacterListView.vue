@@ -38,7 +38,9 @@
               <router-link :to="`/characters/${scope.row.id}/edit`" style="text-decoration: none;">
                 <el-button type="primary" link size="small">编辑</el-button>
               </router-link>
-              <el-button type="danger" link size="small">删除</el-button>
+              <el-button type="danger" link size="small"
+                @click="handleDeleteCharacter(scope.row.id, scope.row.name)"
+              >删除</el-button>
             </div>
           </template>
         </el-table-column>
@@ -94,7 +96,46 @@ const fetchCharacters = async () => {
     loading.value = false;
   }
 };
+const handleDeleteCharacter = async (characterId, characterName) => {
+  try {
+    // 1. 弹出确认对话框
+    await ElMessageBox.confirm(
+      `你确定要永久删除角色 "${characterName}" 吗？此操作无法撤销。`,
+      '警告',
+      {
+        confirmButtonText: '确定删除',
+        cancelButtonText: '取消',
+        type: 'warning',
+        // 让背景更暗，突出对话框
+        customClass: 'message-box-custom'
+      }
+    );
 
+    // 2. 如果用户点击了“确定”，则执行 API 调用
+    await api.deleteCharacter(characterId);
+    ElMessage.success(`角色 "${characterName}" 已被删除。`);
+
+    // 3. 刷新列表
+    // 检查当前页是否在删除后变空，如果是，则返回上一页
+    if (characters.value.length === 1 && currentPage.value > 1) {
+      currentPage.value -= 1;
+    }
+    // 重新获取总数和当前页数据
+    const allCharactersResponse = await api.getCharacters({ limit: 9999 });
+    total.value = allCharactersResponse.data.length;
+    fetchCharacters();
+
+  } catch (action) {
+    // 4. 如果用户点击了“取消”或关闭对话框
+    if (action === 'cancel') {
+      ElMessage.info('删除操作已取消。');
+    } else {
+      // API 调用失败
+      console.error("删除角色失败:", action);
+      ElMessage.error('删除失败，请重试。');
+    }
+  }
+};
 // --- 事件处理 ---
 const handlePageChange = (newPage) => {
   currentPage.value = newPage;

@@ -11,7 +11,8 @@ from contextlib import asynccontextmanager
 async def lifespan(app: FastAPI):
     # 应用启动时执行的代码
     print("Application startup...")
-    gemini_service.initialize_gemini()
+    # 初始化Gemini SDK，明确指定不使用代理
+    gemini_service.initialize_gemini(use_proxy=False)
     yield
     # 应用关闭时执行的代码 (如果有的话)
     print("Application shutdown...")

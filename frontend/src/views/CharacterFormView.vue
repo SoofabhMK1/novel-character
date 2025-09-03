@@ -50,40 +50,48 @@
         ref="characterFormRef"
         :model="characterForm" 
         :rules="rules"
-        label-width="120px"
+        label-width="100px"
         v-loading="loading"
       >
         <el-tabs v-model="activeTab">
+          <!-- ============================================== -->
+          <!-- ==        基础信息 Tab (补全字段)           == -->
+          <!-- ============================================== -->
           <el-tab-pane label="基础信息" name="basic">
-            <el-row :gutter="20">
-              <el-col :span="12">
+            <el-row :gutter="24">
+              <el-col :xs="24" :sm="12">
                 <el-form-item label="全名" prop="name">
                   <el-input v-model="characterForm.name" placeholder="请输入角色全名" />
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :xs="24" :sm="12">
                 <el-form-item label="昵称" prop="nickname">
                   <el-input v-model="characterForm.nickname" placeholder="角色的常用称呼" />
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :xs="24" :sm="12">
                  <el-form-item label="种族" prop="race">
                   <el-select v-model="characterForm.race" placeholder="请选择种族" style="width: 100%;">
                     <el-option v-for="item in enums.Race" :key="item" :label="item" :value="item" />
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :xs="24" :sm="12">
                 <el-form-item label="职业" prop="occupation">
                   <el-input v-model="characterForm.occupation" placeholder="角色的职业" />
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :xs="24" :sm="12">
                 <el-form-item label="年龄" prop="age">
-                  <el-input-number v-model="characterForm.age" :min="0" />
+                  <el-input-number v-model="characterForm.age" :min="0" controls-position="right" style="width: 100%;"/>
                 </el-form-item>
               </el-col>
-               <el-col :span="12">
+              <el-col :xs="24" :sm="12">
+                <el-form-item label="身高(cm)" prop="height_cm">
+                  <el-input-number v-model="characterForm.height_cm" :min="0" controls-position="right" style="width: 100%;"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
                 <el-form-item label="性别" prop="gender">
                   <el-radio-group v-model="characterForm.gender">
                     <el-radio v-for="item in enums.Gender" :key="item" :label="item" />
@@ -93,15 +101,44 @@
             </el-row>
           </el-tab-pane>
 
+          <!-- ============================================== -->
+          <!-- ==       外貌与个性 Tab (补全字段)          == -->
+          <!-- ============================================== -->
           <el-tab-pane label="外貌与个性" name="appearance">
-             <el-form-item label="核心特质" prop="personality_details.core_traits">
-                <el-input v-model="coreTraitsInput" placeholder="特质之间用英文逗号 , 分隔" />
-             </el-form-item>
-             <el-form-item label="外貌描述" prop="appearance_details.description">
-                <el-input type="textarea" :rows="4" v-model="characterForm.appearance_details.description" placeholder="描述角色的外貌特征..." />
-             </el-form-item>
+            <el-row :gutter="24">
+               <el-col :xs="24" :sm="12">
+                <el-form-item label="体型" prop="build">
+                  <el-select v-model="characterForm.build" placeholder="请选择体型" style="width: 100%;">
+                    <el-option v-for="item in enums.BuildType" :key="item" :label="item" :value="item" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :xs="24" :sm="12">
+                <el-form-item label="阵营" prop="alignment">
+                  <el-select v-model="characterForm.alignment" placeholder="请选择阵营" style="width: 100%;">
+                    <el-option v-for="item in enums.Alignment" :key="item" :label="item" :value="item" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+               <el-col :span="24">
+                 <el-form-item label="当前状态" prop="status">
+                  <el-radio-group v-model="characterForm.status">
+                    <el-radio v-for="item in enums.Status" :key="item" :label="item" />
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="核心特质" prop="personality_details.core_traits">
+                  <el-input v-model="coreTraitsInput" placeholder="特质之间用英文逗号 , 分隔" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="外貌描述" prop="appearance_details.description">
+                  <el-input type="textarea" :rows="4" v-model="characterForm.appearance_details.description" placeholder="描述角色的外貌特征，如发色、瞳色、特殊标记等..." />
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-tab-pane>
-          
           <el-tab-pane label="背景故事" name="background">
              <el-form-item label="家乡" prop="background_details.hometown">
                 <el-input v-model="characterForm.background_details.hometown" placeholder="角色长大的地方" />
@@ -111,10 +148,6 @@
              </el-form-item>
           </el-tab-pane>
         </el-tabs> 
-        
-        <!-- ======================================================= -->
-        <!-- == 关键修正：确保这个 el-form-item 在 </el-tabs> 之后 == -->
-        <!-- ======================================================= -->
         <el-form-item class="form-actions">
           <el-button type="primary" @click="submitForm">保存角色</el-button>
           <el-button @click="goBack">取消</el-button>
@@ -154,10 +187,14 @@ const enums = reactive({ Gender: [], Race: [], Alignment: [], Status: [], BuildT
 const defaultForm = () => ({
   name: '',
   nickname: '',
-  age: 0,
+  age: null,
   gender: 'Other',
   race: 'Other',
   occupation: '',
+  height_cm: null,
+  build: 'Average',
+  status: 'Unknown',
+  alignment: 'True Neutral',
   personality_details: { core_traits: [] },
   appearance_details: { description: '' },
   background_details: { hometown: '', key_life_events: '' },

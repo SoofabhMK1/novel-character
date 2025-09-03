@@ -14,12 +14,38 @@ def is_gemini_configured() -> bool:
     """检查 Gemini API Key 是否已配置"""
     return settings.GOOGLE_API_KEY is not None
 
-def initialize_gemini():
-    """在应用启动时初始化 Gemini SDK"""
+def initialize_gemini(use_proxy: bool = False):
+    """在应用启动时初始化 Gemini SDK
+    
+    Args:
+        use_proxy: 是否使用系统代理，默认为False
+    """
     if is_gemini_configured():
         try:
+            # 保存原始的代理设置
+            original_http_proxy = os.environ.get('HTTP_PROXY')
+            original_https_proxy = os.environ.get('HTTPS_PROXY')
+            
+            # 如果不使用代理，临时清除环境变量中的代理设置
+            if not use_proxy:
+                if 'HTTP_PROXY' in os.environ:
+                    del os.environ['HTTP_PROXY']
+                if 'HTTPS_PROXY' in os.environ:
+                    del os.environ['HTTPS_PROXY']
+                print("Configuring Gemini SDK without proxy.")
+            else:
+                print("Configuring Gemini SDK with system proxy.")
+                
+            # 配置Gemini SDK
             genai.configure(api_key=settings.GOOGLE_API_KEY)
             print("Gemini SDK configured successfully.")
+            
+            # 恢复原始的代理设置
+            if not use_proxy:
+                if original_http_proxy:
+                    os.environ['HTTP_PROXY'] = original_http_proxy
+                if original_https_proxy:
+                    os.environ['HTTPS_PROXY'] = original_https_proxy
         except Exception as e:
             print(f"Error configuring Gemini SDK: {e}")
 
@@ -52,6 +78,8 @@ def generate_character_profile(user_prompt: str, proxy_url: Optional[str] = None
             # 为当前进程设置代理环境变量
             os.environ['HTTP_PROXY'] = proxy_url
             os.environ['HTTPS_PROXY'] = proxy_url
+            # 使用代理初始化Gemini
+            initialize_gemini(use_proxy=True)
         else:
             # 如果不使用代理，确保清除环境变量中的代理设置
             if 'HTTP_PROXY' in os.environ:
@@ -59,9 +87,8 @@ def generate_character_profile(user_prompt: str, proxy_url: Optional[str] = None
             if 'HTTPS_PROXY' in os.environ:
                 del os.environ['HTTPS_PROXY']
             print("No proxy will be used for this request.")
-        
-        # 重新运行initialize_gemini以使客户端获取新配置
-        initialize_gemini()
+            # 不使用代理初始化Gemini
+            initialize_gemini(use_proxy=False)
         
         # 设置生成配置
         generation_config = {"response_mime_type": "application/json"}

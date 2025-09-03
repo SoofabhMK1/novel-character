@@ -31,6 +31,9 @@
             <el-descriptions-item label="职业">{{ character.occupation || '无' }}</el-descriptions-item>
             <el-descriptions-item label="身高">{{ character.height_cm ? `${character.height_cm} cm` : '未知' }}</el-descriptions-item>
             <el-descriptions-item label="体型">{{ character.build }}</el-descriptions-item>
+            <el-descriptions-item label="尺寸">
+              {{ formattedMeasurements }}
+            </el-descriptions-item>
             <el-descriptions-item label="当前状态">{{ character.status }}</el-descriptions-item>
             
             <!-- 个性特征 -->
@@ -177,6 +180,26 @@ const enums = reactive({ RelationshipType: [] });
 const newRelationship = reactive({
   character_to_id: '',
   relationship_type: '',
+});
+
+const formattedMeasurements = computed(() => {
+  // 关键：检查 character 和 measurements 是否存在，防止在数据加载完成前报错
+  if (!character.value || !character.value.measurements) {
+    return '—'; // 或者返回 '无数据'
+  }
+
+  // 获取 measurements 对象
+  const measurements = character.value.measurements;
+
+  // 将对象转换为 "Key: Value" 格式的字符串数组
+  // Object.entries({ "胸围": 88, "腰围": 57 }) -> [ ['胸围', 88], ['腰围', 57] ]
+  const parts = Object.entries(measurements).map(([key, value]) => {
+    return `${key}: ${value}`; // -> "胸围: 88"
+  });
+
+  // 使用 ' / ' 将数组元素连接成一个最终的字符串
+  // -> "胸围: 88 / 腰围: 57 / 臀围: 86"
+  return parts.join(' / ');
 });
 
 // --- 数据获取 ---
