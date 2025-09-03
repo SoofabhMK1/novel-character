@@ -11,6 +11,46 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - novel_db_data:/var/lib/postgresql/data
+      # - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      - novel_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # 暴露端口，映射到主机的 5432 端口 部署到服务端的时候可以注释掉
+    ports:
+      - "5432:5432"
+
+  migrate:
+    build:
+      context: ./backend
+    # 覆盖 Dockerfile 中的 CMD，执行迁移命令
+    command: alembic upgrade head
+    env_file:
+      - ./.env
+    depends_on:
+      db:
+        condition: service_healthy # 等待 db 服务健康后再启动
+    networks:
+      - novel_network
+
+  seed:
+    image: postgres:15-alpine # 使用 postgres 镜像，因为它自带 psql 客户端
+    # 将 init.sql 文件挂载到容器中
+    volumes:
+      - ./init-db/init.sql:/init.sql
+    # 覆盖启动命令，使用 psql 执行脚本
+    command: >
+      sh -c "
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -h db -U ${POSTGRES_USER} -d ${POSTGRES_DB} -f /init.sql
+      "
+    env_file:
+      - ./.env
+    depends_on:
+      migrate: # <-- 关键：等待 migrate 服务成功完成后再运行
+        condition: service_completed_successfully
     networks:
       - novel_network
 
@@ -22,7 +62,8 @@ services:
     env_file:
       - ./.env
     depends_on:
-      - db
+      db:
+        condition: service_healthy # 等待 db 服务健康后再启动
     networks:
       - novel_network
     volumes:

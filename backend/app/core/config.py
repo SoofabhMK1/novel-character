@@ -40,7 +40,8 @@ class Settings(BaseSettings):
         return self
 
     class Config:
-        env_file = "../.env"
+        # env_file = "../.env"
+        pass
 
 # 创建一个全局可用的配置实例
 settings = Settings()
