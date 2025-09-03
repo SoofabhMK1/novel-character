@@ -26,28 +26,48 @@ class PersonalitySchema(BaseModel):
     dislikes: Optional[str] = None
 
 # ===================================================================
+# Schemas for Characters (基础部分)
+# ===================================================================
+
+# --- 新增一个极简的角色 Schema，用于在关系中嵌套显示 ---
+class CharacterSimple(BaseModel):
+    """一个简化的角色模型，用于嵌套在其他模型中"""
+    id: uuid.UUID
+    name: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+# ===================================================================
 # Schemas for Character Relationships
 # ===================================================================
 
-class CharacterRelationshipBase(BaseModel):
+class RelationshipBase(BaseModel):
     """关系模型的基础，包含创建时需要的数据"""
+    # 关系的目标角色 ID
     character_to_id: uuid.UUID
+    # 关系类型
     relationship_type: RelationshipType
+    # 关系描述
     description: Optional[str] = None
 
 
-class CharacterRelationshipCreate(CharacterRelationshipBase):
+class RelationshipCreate(RelationshipBase):
     """用于从 API 创建关系的 Schema"""
     pass
 
 
-class CharacterRelationship(CharacterRelationshipBase):
+class Relationship(RelationshipBase):
     """用于从 API 读取（返回）关系的 Schema"""
     id: int
+    # 关系的发起方角色 ID
     character_from_id: uuid.UUID
+    
+    # --- 关键：嵌套显示关系另一端的角色信息 ---
+    character_from: CharacterSimple
+    character_to: CharacterSimple
 
-    # Pydantic V2 的配置，允许模型从 ORM 对象属性中读取数据
     model_config = ConfigDict(from_attributes=True)
+
 
 
 # ===================================================================

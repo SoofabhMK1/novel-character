@@ -1,10 +1,11 @@
-from typing import Dict, Any, List
-from sqlalchemy import func, desc
-from sqlalchemy.orm import Session
+from typing import Dict, Any, List, Optional 
+from sqlalchemy import func, desc, or_
+from sqlalchemy.orm import Session, joinedload
+import uuid 
 
 from app.crud.base import CRUDBase
 from app.models.character import Character, CharacterRelationship
-from app.schemas.character import CharacterCreate, CharacterUpdate
+from app.schemas.character import CharacterCreate, CharacterUpdate, RelationshipCreate
 from app.core.enums import Status, Alignment
 
 
@@ -62,6 +63,58 @@ class CRUDCharacter(CRUDBase[Character, CharacterCreate, CharacterUpdate]):
         
         return query.offset(skip).limit(limit).all()
 
+# =======================================================
+# ==              新增的关系管理方法                   ==
+# =======================================================
+
+    def add_relationship(
+        self, db: Session, *, character_from_id: uuid.UUID, obj_in: RelationshipCreate
+    ) -> CharacterRelationship:
+        """
+        为一个角色添加一个新的关系。
+        """
+        # 创建一个新的 CharacterRelationship ORM 对象
+        db_relationship = CharacterRelationship(
+            character_from_id=character_from_id,
+            character_to_id=obj_in.character_to_id,
+            relationship_type=obj_in.relationship_type,
+            description=obj_in.description,
+        )
+        db.add(db_relationship)
+        db.commit()
+        db.refresh(db_relationship)
+        return db_relationship
+
+    def get_relationships_for_character(
+        self, db: Session, *, character_id: uuid.UUID
+    ) -> List[CharacterRelationship]:
+        """
+        获取一个特定角色的所有关系 (包括作为发起方和接收方)。
+        """
+        query = db.query(CharacterRelationship).options(
+            # 使用 joinedload (预加载) 来高效地获取关联的角色信息
+            # 这会通过一个 JOIN 查询，一次性把关系和两端的角色名都查出来
+            joinedload(CharacterRelationship.character_from),
+            joinedload(CharacterRelationship.character_to)
+        ).filter(
+            # 查询条件：当前角色ID是发起方 OR 是接收方
+            or_(
+                CharacterRelationship.character_from_id == character_id,
+                CharacterRelationship.character_to_id == character_id,
+            )
+        )
+        return query.all()
+
+    def delete_relationship(self, db: Session, *, relationship_id: int) -> Optional[CharacterRelationship]:
+        """
+        通过 ID 删除一个关系。
+        """
+        # CharacterRelationship 的主键是 id (Integer)，不是 UUID
+        relationship = db.query(CharacterRelationship).get(relationship_id)
+        if relationship:
+            db.delete(relationship)
+            db.commit()
+        return relationship
 
 # 创建一个 CRUDCharacter 类的实例，以便在 API 路由中方便地导入和使用
 character = CRUDCharacter(Character)

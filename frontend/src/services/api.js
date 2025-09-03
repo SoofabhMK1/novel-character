@@ -57,7 +57,24 @@ export default {
   deleteCharacter(id) {
     return apiClient.delete(`/characters/${id}`);
   },
-  
+
+    // =======================================================
+    // ==           新增：角色关系 API 调用               ==
+    // =======================================================
+
+    getRelationships(characterId) {
+      return apiClient.get(`/characters/${characterId}/relationships`);
+    },
+
+    addRelationship(characterFromId, relationshipData) {
+      // relationshipData should be like { character_to_id, relationship_type, description }
+      return apiClient.post(`/characters/${characterFromId}/relationships`, relationshipData);
+    },
+
+    deleteRelationship(relationshipId) {
+      return apiClient.delete(`/characters/relationships/${relationshipId}`);
+    },
+    
   getEnums() {
     return apiClient.get('/utils/enums');
   },

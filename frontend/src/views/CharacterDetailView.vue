@@ -5,57 +5,58 @@
         <span class="text-large font-600 mr-3"> 角色详情 </span>
       </template>
       <template #extra>
-        <div class="flex items-center">
+        <div class="action-buttons-header">
+          <el-button @click="openRelationshipDialog">管理关系</el-button>
           <router-link :to="`/characters/${characterId}/edit`">
-            <el-button type="primary" class="ml-2">编辑</el-button>
+            <el-button type="primary">编辑</el-button>
           </router-link>
         </div>
       </template>
     </el-page-header>
 
+    <!-- ============================================== -->
+    <!-- ==      关键修正：确保所有内容都在 Card 内部    == -->
+    <!-- ============================================== -->
     <el-card v-if="character" shadow="never">
       <el-row :gutter="30">
         <!-- 左侧：描述列表 -->
         <el-col :xs="24" :md="16">
           <el-descriptions :column="2" border>
-            <!-- (描述项内容不变，但可以把 column 改为 2, 让布局更紧凑) -->
             <!-- 基础信息 -->
-        <!-- 基础信息 -->
-        <el-descriptions-item label="全名">{{ character.name }}</el-descriptions-item>
-        <el-descriptions-item label="昵称">{{ character.nickname || '无' }}</el-descriptions-item>
-        <el-descriptions-item label="年龄">{{ character.age || '未知' }}</el-descriptions-item>
-        
-        <el-descriptions-item label="种族">{{ character.race }}</el-descriptions-item>
-        <el-descriptions-item label="性别">{{ character.gender }}</el-descriptions-item>
-        <el-descriptions-item label="职业">{{ character.occupation || '无' }}</el-descriptions-item>
+            <el-descriptions-item label="全名">{{ character.name }}</el-descriptions-item>
+            <el-descriptions-item label="昵称">{{ character.nickname || '无' }}</el-descriptions-item>
+            <el-descriptions-item label="年龄">{{ character.age || '未知' }}</el-descriptions-item>
+            <el-descriptions-item label="种族">{{ character.race }}</el-descriptions-item>
+            <el-descriptions-item label="性别">{{ character.gender }}</el-descriptions-item>
+            <el-descriptions-item label="职业">{{ character.occupation || '无' }}</el-descriptions-item>
+            <el-descriptions-item label="身高">{{ character.height_cm ? `${character.height_cm} cm` : '未知' }}</el-descriptions-item>
+            <el-descriptions-item label="体型">{{ character.build }}</el-descriptions-item>
+            <el-descriptions-item label="当前状态">{{ character.status }}</el-descriptions-item>
+            
+            <!-- 个性特征 -->
+            <el-descriptions-item label="核心特质" :span="2">
+              <el-tag 
+                v-for="trait in character.personality_details.core_traits" 
+                :key="trait"
+                class="trait-tag"
+                effect="plain"
+              >
+                {{ trait }}
+              </el-tag>
+            </el-descriptions-item>
+            <el-descriptions-item label="阵营">{{ character.alignment }}</el-descriptions-item>
+            <el-descriptions-item label="MBTI">{{ character.personality_details.mbti || '未设定' }}</el-descriptions-item>
+            <el-descriptions-item label="优点" :span="2">{{ character.personality_details.strengths || '无' }}</el-descriptions-item>
+            <el-descriptions-item label="弱点" :span="2">{{ character.personality_details.weaknesses || '无' }}</el-descriptions-item>
+            
+            <!-- 背景故事 -->
+            <el-descriptions-item label="家乡" :span="2">{{ character.background_details.hometown || '未知' }}</el-descriptions-item>
+            <el-descriptions-item label="关键事件" :span="2">{{ character.background_details.key_life_events || '无' }}</el-descriptions-item>
+          </el-descriptions>
+        </el-col>
 
-        <el-descriptions-item label="身高">{{ character.height_cm ? `${character.height_cm} cm` : '未知' }}</el-descriptions-item>
-        <el-descriptions-item label="体型">{{ character.build }}</el-descriptions-item>
-        <el-descriptions-item label="当前状态">{{ character.status }}</el-descriptions-item>
-        
-        <!-- 个性特征 -->
-        <el-descriptions-item label="核心特质" :span="3">
-          <el-tag 
-            v-for="trait in character.personality_details.core_traits" 
-            :key="trait"
-            class="trait-tag"
-            effect="plain"
-          >
-            {{ trait }}
-          </el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item label="阵营">{{ character.alignment }}</el-descriptions-item>
-        <el-descriptions-item label="MBTI">{{ character.personality_details.mbti || '未设定' }}</el-descriptions-item>
-        <el-descriptions-item label="优点">{{ character.personality_details.strengths || '无' }}</el-descriptions-item>
-        <el-descriptions-item label="弱点" :span="3">{{ character.personality_details.weaknesses || '无' }}</el-descriptions-item>
-        
-        <!-- 背景故事 -->
-        <el-descriptions-item label="家乡" :span="3">{{ character.background_details.hometown || '未知' }}</el-descriptions-item>
-        <el-descriptions-item label="关键事件" :span="3">{{ character.background_details.key_life_events || '无' }}</el-descriptions-item>
-
-      </el-descriptions>
-      </el-col>
-      <el-col :xs="24" :md="8">
+        <!-- 右侧：角色图片 -->
+        <el-col :xs="24" :md="8">
           <el-image 
             v-if="character.image_url"
             :src="character.image_url" 
@@ -74,38 +75,208 @@
     </el-card>
 
     <el-skeleton v-else :rows="10" animated />
+
+    <!-- 关系管理模态框 (保持不变) -->
+    <el-dialog
+      v-model="relationshipDialogVisible"
+      :title="`管理 '${character?.name}' 的人际关系`"
+      width="70%"
+      @close="resetNewRelationship"
+    >
+      <!-- 添加新关系表单 -->
+      <el-card shadow="never" class="add-relationship-card">
+        <template #header><strong>添加新关系</strong></template>
+        <el-form :model="newRelationship" label-width="80px" inline class="relationship-form">
+          <el-form-item label="目标角色">
+            <el-select
+              v-model="newRelationship.character_to_id"
+              placeholder="选择一个角色"
+              filterable
+            >
+              <el-option
+                v-for="char in otherCharacters"
+                :key="char.id"
+                :label="char.name"
+                :value="char.id"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="关系类型">
+            <el-select v-model="newRelationship.relationship_type" 
+              placeholder="选择关系"
+              class="form-select"
+            >
+              <el-option
+                v-for="relType in enums.RelationshipType"
+                :key="relType"
+                :label="relType"
+                :value="relType"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="handleAddRelationship">添加</el-button>
+          </el-form-item>
+        </el-form>
+      </el-card>
+
+      <!-- 关系列表 -->
+      <el-table :data="relationships" v-loading="loadingRelationships" style="margin-top: 20px;">
+        <el-table-column label="关系描述">
+          <template #default="scope">
+            <div class="relationship-cell">
+              <strong class="character-name">{{ getRelationSubject(scope.row) }}</strong>
+              <span class="relation-text">是</span>
+              <el-tag>{{ scope.row.relationship_type }}</el-tag>
+              <span class="relation-text">对于</span>
+              <strong class="character-name">{{ getRelationObject(scope.row) }}</strong>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="100" align="center">
+          <template #default="scope">
+            <el-button 
+              type="danger" 
+              link 
+              @click="handleDeleteRelationship(scope.row.id)"
+            >
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="relationshipDialogVisible = false">关闭</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, reactive, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import api from '../services/api';
-import { Picture as IconPicture } from '@element-plus/icons-vue'
-// --- 获取路由信息 ---
+import { Picture as IconPicture } from '@element-plus/icons-vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
+
+// --- 基础状态和路由 ---
 const route = useRoute();
 const router = useRouter();
-
-// --- 响应式状态定义 ---
 const character = ref(null);
-const characterId = route.params.id; // 从 URL 中获取 :id 参数
+const characterId = route.params.id;
 
-// --- API 调用逻辑 ---
+// --- 关系模态框状态 ---
+const relationshipDialogVisible = ref(false);
+const loadingRelationships = ref(false);
+const relationships = ref([]);
+const otherCharacters = ref([]);
+const enums = reactive({ RelationshipType: [] });
+const newRelationship = reactive({
+  character_to_id: '',
+  relationship_type: '',
+});
+
+// --- 数据获取 ---
 const fetchCharacterDetails = async () => {
   if (!characterId) return;
-
+  
+  // =======================================================
+  // ==        为核心数据获取添加 try...catch           ==
+  // =======================================================
   try {
     const response = await api.getCharacter(characterId);
     character.value = response.data;
   } catch (error) {
     console.error(`获取ID为 ${characterId} 的角色详情失败:`, error);
-    // 可以在这里添加错误处理，比如跳转到404页面
+    // 给用户一个清晰的反馈
+    ElMessage.error('加载角色详情失败，请检查网络或联系管理员。');
+    // （可选）可以跳转到错误页面或列表页
+    // router.push('/characters'); 
+  }
+};
+
+const fetchRelationshipData = async () => {
+  if (!characterId) return;
+  loadingRelationships.value = true;
+  try {
+    const [relsResponse, allCharsResponse, enumsResponse] = await Promise.all([
+      api.getRelationships(characterId),
+      api.getCharacters({ limit: 1000 }),
+      api.getEnums()
+    ]);
+    
+    relationships.value = relsResponse.data;
+    otherCharacters.value = allCharsResponse.data.filter(c => c.id !== characterId);
+    enums.RelationshipType = enumsResponse.data.RelationshipType;
+  } catch (error) {
+    console.error("加载关系数据失败:", error);
+    ElMessage.error('加载关系数据失败！');
+  } finally {
+    loadingRelationships.value = false;
   }
 };
 
 // --- 事件处理 ---
-const goBack = () => {
-  router.push('/characters'); // 或者 router.back()
+const goBack = () => router.push('/characters');
+
+const openRelationshipDialog = () => {
+  relationshipDialogVisible.value = true;
+  fetchRelationshipData(); // 打开时加载数据
+};
+
+const resetNewRelationship = () => {
+  newRelationship.character_to_id = '';
+  newRelationship.relationship_type = '';
+};
+
+const handleAddRelationship = async () => {
+  if (!newRelationship.character_to_id || !newRelationship.relationship_type) {
+    ElMessage.warning('请选择目标角色和关系类型');
+    return;
+  }
+  try {
+    await api.addRelationship(characterId, newRelationship);
+    ElMessage.success('关系添加成功！');
+    resetNewRelationship();
+    fetchRelationshipData(); // 重新加载列表
+  } catch (error) {
+    console.error("添加关系失败:", error);
+    ElMessage.error('添加关系失败！');
+  }
+};
+
+const handleDeleteRelationship = async (relationshipId) => {
+  try {
+    await ElMessageBox.confirm(
+      '确定要删除这条关系吗？此操作不可撤销。',
+      '警告',
+      {
+        confirmButtonText: '确定删除',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }
+    );
+    // 用户点击了确认
+    await api.deleteRelationship(relationshipId);
+    ElMessage.success('关系已删除');
+    fetchRelationshipData(); // 重新加载列表
+  } catch (action) {
+    // 用户点击了取消或关闭对话框
+    if (action === 'cancel') {
+      ElMessage.info('操作已取消');
+    }
+  }
+};
+
+// --- 辅助计算属性 (用于清晰展示双向关系) ---
+const getRelationSubject = (row) => {
+  return row.character_from.id === characterId ? '你' : row.character_from.name;
+};
+const getRelationObject = (row) => {
+  return row.character_to.id === characterId ? '你' : row.character_to.name;
 };
 
 // --- 生命周期钩子 ---
@@ -141,4 +312,33 @@ onMounted(() => {
   color: var(--el-text-color-secondary);
   font-size: 30px;
 }
+.action-buttons-header {
+  display: flex;
+  gap: 10px;
+}
+.add-relationship-card {
+  margin-bottom: 20px;
+}
+.relationship-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.character-name {
+  color: var(--el-color-primary);
+}
+.relationship-form {
+  display: flex;
+  flex-wrap: wrap; /* 允许换行 */
+  gap: 10px;
+}
+
+.relationship-form .el-form-item {
+  margin-bottom: 0; /* inline 模式下不需要底部 margin */
+}
+
+.form-select {
+  width: 200px; /* 给下拉框一个固定的、足够的宽度 */
+}
+
 </style>
