@@ -1,7 +1,20 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1 import characters, utils 
+from app.api.v1 import characters, utils, ai
+from app.services import gemini_service
+from contextlib import asynccontextmanager
+
+# --- 在应用启动时执行初始化 ---
+# FastAPI 的事件处理器
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # 应用启动时执行的代码
+    print("Application startup...")
+    gemini_service.initialize_gemini()
+    yield
+    # 应用关闭时执行的代码 (如果有的话)
+    print("Application shutdown...")
 
 # 创建 FastAPI 应用实例
 app = FastAPI(
@@ -11,7 +24,8 @@ app = FastAPI(
     # --- 新增/修改这三行 ---
     docs_url="/api/docs",
     redoc_url="/api/redoc",
-    openapi_url="/api/openapi.json"
+    openapi_url="/api/openapi.json",
+    lifespan=lifespan # 注册 lifespan 事件处理器
 )
 
 # 定义允许的前端源列表
@@ -50,4 +64,10 @@ app.include_router(
     utils.router,
     prefix="/api/v1/utils",
     tags=["Utils"]
+)
+
+app.include_router(
+    ai.router,
+    prefix="/api/v1/ai",
+    tags=["AI"]
 )

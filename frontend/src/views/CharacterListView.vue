@@ -25,9 +25,9 @@
             </el-avatar>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="姓名" min-width="180" />
+        <el-table-column prop="name" label="姓名" width="180" />
         <el-table-column prop="race" label="种族" width="120" />
-        <el-table-column prop="occupation" label="职业" width="150" />
+        <el-table-column prop="occupation" label="职业" min-width="150" />
         <el-table-column prop="status" label="状态" width="120" />
         <el-table-column fixed="right" label="操作" width="200">
           <template #default="scope">

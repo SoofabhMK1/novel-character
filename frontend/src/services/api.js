@@ -58,6 +58,18 @@ export default {
     return apiClient.delete(`/characters/${id}`);
   },
 
+  // =======================================================
+  // ==           新增：AI 生成 API 调用                ==
+  // =======================================================
+  generateCharacterFromPrompt(prompt, useProxy = false, proxyUrl = '') {
+    const requestData = {
+      prompt: prompt,
+      use_proxy: useProxy,
+      proxy_url: proxyUrl
+    };
+    return apiClient.post('/ai/generate-character', requestData);
+  },
+  
     // =======================================================
     // ==           新增：角色关系 API 调用               ==
     // =======================================================
@@ -74,7 +86,9 @@ export default {
     deleteRelationship(relationshipId) {
       return apiClient.delete(`/characters/relationships/${relationshipId}`);
     },
-    
+  getFeatureFlags() {
+    return apiClient.get('/utils/features');
+  },
   getEnums() {
     return apiClient.get('/utils/enums');
   },

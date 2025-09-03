@@ -14,3 +14,9 @@ pydantic-settings
 
 # For file uploads (will be used for images)
 python-multipart
+
+# For Google Gemini
+google-generativeai
+
+# For proxy support
+httpx

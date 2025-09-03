@@ -6,7 +6,46 @@
       </template>
     </el-page-header>
 
-    <el-card shadow="never">
+    <!-- ============================================== -->
+    <!-- ==              AI 生成区域                 == -->
+    <!-- ============================================== -->
+    <el-card v-if="featureFlags.ai_generation_enabled" shadow="never" class="ai-generation-card">
+      <template #header>
+        <div class="card-header">
+          <strong>✨ AI 辅助创作</strong>
+          <span>输入简单的想法，让 AI 帮助你构建角色。</span>
+        </div>
+      </template>
+      <el-input
+        v-model="aiPrompt"
+        type="textarea"
+        :rows="3"
+        placeholder="例如：一个厌倦了战争、隐居在深林中的年迈精灵德鲁伊"
+        show-word-limit
+        maxlength="200"
+      />
+      <div class="ai-actions">
+        <div class="proxy-settings">
+          <el-checkbox v-model="aiUseProxy" label="启用代理" size="small" />
+          <el-input
+            v-if="aiUseProxy"
+            v-model="aiProxyUrl"
+            placeholder="例如: http://127.0.0.1:7890"
+            size="small"
+            class="proxy-input"
+          />
+        </div>
+        <el-button 
+          type="primary" 
+          @click="handleAIGenerate" 
+          :loading="isGenerating"
+        >
+          {{ isGenerating ? '生成中...' : '生成角色' }}
+        </el-button>
+      </div>
+    </el-card>
+
+    <el-card shadow="never" style="margin-top: 20px;">
       <el-form 
         ref="characterFormRef"
         :model="characterForm" 
@@ -97,8 +136,15 @@ const router = useRouter();
 
 const characterFormRef = ref(null);
 const loading = ref(true);
+const isGenerating = ref(false); // AI 生成加载状态
 const activeTab = ref('basic');
 const characterId = ref(route.params.id || null);
+
+// --- AI 相关状态 ---
+const featureFlags = reactive({ ai_generation_enabled: false });
+const aiPrompt = ref('');
+const aiUseProxy = ref(false);
+const aiProxyUrl = ref(''); // 用户输入的代理地址
 
 const isEditMode = computed(() => !!characterId.value);
 const pageTitle = computed(() => isEditMode.value ? '编辑角色' : '新建角色');
@@ -135,19 +181,52 @@ watch(coreTraitsInput, (newVal) => {
 const fetchInitialData = async () => {
   loading.value = true;
   try {
-    const enumsResponse = await api.getEnums();
+    // 并行获取所有初始化数据
+    const [enumsResponse, featuresResponse] = await Promise.all([
+      api.getEnums(),
+      api.getFeatureFlags()
+    ]);
+
     Object.assign(enums, enumsResponse.data);
+    Object.assign(featureFlags, featuresResponse.data);
+
     if (isEditMode.value) {
       const characterResponse = await api.getCharacter(characterId.value);
       characterForm.value = { ...defaultForm(), ...characterResponse.data };
     }
   } catch (error) {
-    ElMessage.error('加载初始数据失败！');
+    ElMessage.error('加载页面初始数据失败！');
     console.error(error);
   } finally {
     loading.value = false;
   }
 };
+
+// --- 逻辑处理 ---
+const handleAIGenerate = async () => {
+  if (!aiPrompt.value.trim()) {
+    ElMessage.warning('请输入对角色的描述');
+    return;
+  }
+  isGenerating.value = true;
+  try {
+    const response = await api.generateCharacterFromPrompt(
+      aiPrompt.value,
+      aiUseProxy.value,
+      aiProxyUrl.value
+    );
+    // 用 AI 返回的数据覆盖表单，同时保留未生成字段的默认值
+    characterForm.value = { ...defaultForm(), ...response.data };
+    ElMessage.success('角色生成成功！请检查并完善细节。');
+  } catch (error) {
+    const errorMessage = error.response?.data?.detail || '生成失败，请检查网络或代理设置';
+    ElMessage.error(errorMessage);
+    console.error(error);
+  } finally {
+    isGenerating.value = false;
+  }
+};
+
 
 const submitForm = async () => {
   if (!characterFormRef.value) return;
@@ -192,5 +271,22 @@ onMounted(() => {
   /* 可以添加一些样式让它和 tabs 内容分开 */
   padding-top: 20px;
   border-top: 1px solid var(--el-border-color-lighter);
+}
+.ai-generation-card {
+  margin-bottom: 20px;
+}
+.ai-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+}
+.proxy-settings {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.proxy-input {
+  width: 220px;
 }
 </style>

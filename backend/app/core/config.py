@@ -21,6 +21,8 @@ class Settings(BaseSettings):
     # This field is assembled automatically from the other DB settings.
     DATABASE_URL: Optional[str] = None
 
+    GOOGLE_API_KEY: Optional[str] = None
+
     @model_validator(mode='after')
     def assemble_db_connection(self) -> 'Settings':
         """
