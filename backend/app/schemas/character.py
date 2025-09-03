@@ -57,14 +57,34 @@ class RelationshipCreate(RelationshipBase):
 
 
 class Relationship(RelationshipBase):
-    """用于从 API 读取（返回）关系的 Schema"""
+    """用于从 API 读取（返回）关系的 Schema (重构版)"""
     id: int
-    # 关系的发起方角色 ID
-    character_from_id: uuid.UUID
     
-    # --- 关键：嵌套显示关系另一端的角色信息 ---
     character_from: CharacterSimple
     character_to: CharacterSimple
+
+    # --- 新增：一个动态计算的、对前端友好的描述字段 ---
+    @computed_field
+    @property
+    def perspective_label(self) -> str:
+        """
+        根据关系类型，动态生成正向关系描述。
+        """
+        return self.relationship_type.value
+
+    @computed_field
+    @property
+    def inverse_perspective_label(self) -> str:
+        """
+        动态生成反向关系描述。
+        """
+        # 定义反转映射
+        inverse_map = {
+            RelationshipType.MENTOR: "Subordinate",
+            RelationshipType.SUBORDINATE: "Mentor",
+        }
+        # 如果在映射表中找到，则返回反转后的值，否则返回原始值
+        return inverse_map.get(self.relationship_type, self.relationship_type.value)
 
     model_config = ConfigDict(from_attributes=True)
 

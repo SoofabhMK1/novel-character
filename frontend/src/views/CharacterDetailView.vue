@@ -272,11 +272,21 @@ const handleDeleteRelationship = async (relationshipId) => {
 };
 
 // --- 辅助计算属性 (用于清晰展示双向关系) ---
+const getRelationshipLabel = (row) => {
+  // 判断当前查看的角色是不是关系的发起方
+  const isSubject = row.character_from.id === characterId;
+  // 如果是发起方，使用正向描述；否则，使用反向描述。
+  return isSubject ? row.perspective_label : row.inverse_perspective_label;
+};
+
 const getRelationSubject = (row) => {
-  return row.character_from.id === characterId ? '你' : row.character_from.name;
+  // 现在这个函数需要处理反转情况
+  const isSubject = row.character_from.id === characterId;
+  return isSubject ? '你' : row.character_from.name;
 };
 const getRelationObject = (row) => {
-  return row.character_to.id === characterId ? '你' : row.character_to.name;
+  const isSubject = row.character_from.id === characterId;
+  return isSubject ? row.character_to.name : '你';
 };
 
 // --- 生命周期钩子 ---
