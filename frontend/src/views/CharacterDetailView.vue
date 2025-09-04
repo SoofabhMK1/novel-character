@@ -44,10 +44,16 @@
           <el-descriptions :column="1" border>
             <el-descriptions-item label="全名">{{ character.name }}</el-descriptions-item>
             <el-descriptions-item label="昵称">{{ character.nickname || '无' }}</el-descriptions-item>
-            <el-descriptions-item label="种族">{{ character.race }}</el-descriptions-item>
+            <el-descriptions-item label="种族">
+              <el-link type="primary" @click="showLore('Race', character.race)">{{ character.race }}</el-link>
+            </el-descriptions-item>
             <el-descriptions-item label="职业">{{ character.occupation || '无' }}</el-descriptions-item>
-            <el-descriptions-item label="阵营">{{ character.alignment }}</el-descriptions-item>
-            <el-descriptions-item label="状态">{{ character.status }}</el-descriptions-item>
+            <el-descriptions-item label="阵营">
+              <el-link type="primary" @click="showLore('Alignment', character.alignment)">{{ character.alignment }}</el-link>
+            </el-descriptions-item>
+            <el-descriptions-item label="状态">
+              <el-link type="primary" @click="showLore('Status', character.status)">{{ character.status }}</el-link>
+            </el-descriptions-item>
             <el-descriptions-item label="血统">{{ character.bloodline }}</el-descriptions-item>
           </el-descriptions>
         </el-card>
@@ -93,6 +99,29 @@
     </div>
 
     <el-skeleton v-else :rows="10" animated />
+
+    <!-- ============================================== -->
+    <!-- ==         新增：设定详情模态框             == -->
+    <!-- ============================================== -->
+    <el-dialog
+      v-model="loreDialogVisible"
+      :title="currentLoreEntry?.name || '设定详情'"
+      width="50%"
+    >
+      <div v-if="currentLoreEntry">
+        <p style="white-space: pre-wrap;">{{ currentLoreEntry.description }}</p>
+        <el-divider />
+        <div v-if="currentLoreEntry.attributes && Object.keys(currentLoreEntry.attributes).length > 0">
+          <strong>附加属性:</strong>
+          <ul>
+            <li v-for="(value, key) in currentLoreEntry.attributes" :key="key">
+              <strong>{{ key }}:</strong> {{ Array.isArray(value) ? value.join(', ') : value }}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <el-empty v-else description="暂无该设定的详细信息。" />
+    </el-dialog>
 
     <!-- 关系管理模态框 (保持不变) -->
     <el-dialog
@@ -186,6 +215,11 @@ const router = useRouter();
 const character = ref(null);
 const characterId = route.params.id;
 
+// --- 新增：设定集相关的状态 ---
+const loreData = reactive({}); // 用于缓存所有设定数据
+const loreDialogVisible = ref(false);
+const currentLoreEntry = ref(null);
+
 // --- 关系模态框状态 ---
 const relationshipDialogVisible = ref(false);
 const loadingRelationships = ref(false);
@@ -240,6 +274,57 @@ const fetchCharacterDetails = async () => {
   }
 };
 
+// --- 新增：获取所有设定数据 ---
+const fetchAllLoreData = async () => {
+  try {
+    // 一次性获取所有设定
+    const response = await api.getLoreEntries();
+    // 将返回的数组按 category 分组，方便查找
+    for (const entry of response.data) {
+      if (!loreData[entry.category]) {
+        loreData[entry.category] = {};
+      }
+      loreData[entry.category][entry.key] = entry;
+    }
+  } catch (error) {
+    console.error("获取世界观设定集失败:", error);
+    ElMessage.error("获取世界观设定集失败！");
+  }
+};
+
+// --- 新增：显示设定详情的函数 ---
+const showLore = (category, key) => {
+  // 如果 key 不存在，直接返回，防止 toUpperCase() 报错
+  if (!key) {
+    console.error("Invalid key provided:", key);
+    currentLoreEntry.value = null;
+    loreDialogVisible.value = true;
+    return;
+  }
+  
+  // --- 核心修正：将传入的 key 转换为大写 ---
+  const upperCaseKey = key.toUpperCase();
+
+  console.log(`Attempting to show lore for Category: ${category}, Original Key: ${key}, Uppercase Key: ${upperCaseKey}`);
+  console.log("Lore Cache Object:", JSON.parse(JSON.stringify(loreData)));
+
+  if (!loreData[category]) {
+    console.error(`Category '${category}' not found in lore cache.`);
+    currentLoreEntry.value = null;
+    loreDialogVisible.value = true;
+    return;
+  }
+
+  // 使用转换后的大写 key 进行查找
+  const entry = loreData[category]?.[key]; 
+  if (entry) {
+    currentLoreEntry.value = entry;
+  } else {
+    console.error(`Key '${key}' not found in category '${category}'.`);
+    currentLoreEntry.value = null;
+  }
+  loreDialogVisible.value = true;
+};
 const fetchRelationshipData = async () => {
   if (!characterId) return;
   loadingRelationships.value = true;
@@ -333,7 +418,10 @@ const getRelationObject = (row) => {
 
 // --- 生命周期钩子 ---
 onMounted(() => {
-  fetchCharacterDetails();
+  Promise.all([
+    fetchCharacterDetails(),
+    fetchAllLoreData()
+  ]);
 });
 </script>
 

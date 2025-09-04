@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1 import characters, utils, ai
+from app.api.v1 import characters, utils, ai, lore
 from app.services import gemini_service
 from contextlib import asynccontextmanager
 
@@ -71,4 +71,10 @@ app.include_router(
     ai.router,
     prefix="/api/v1/ai",
     tags=["AI"]
+)
+
+app.include_router(
+    lore.router,
+    prefix="/api/v1/lore",
+    tags=["Lore"]
 )

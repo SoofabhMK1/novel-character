@@ -7,7 +7,8 @@ from alembic import context
 
 # --- MODIFICATION START ---
 # 导入我们定义的 SQLAlchemy Base 和应用配置
-from app.models.character import Base
+from app.db.base import Base
+from app.models import character, lore
 from app.core.config import settings
 # --- MODIFICATION END ---
 

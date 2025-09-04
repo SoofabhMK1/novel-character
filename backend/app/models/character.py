@@ -21,8 +21,8 @@ from app.core.enums import (
     Status,
     Bloodline,
 )
-
-Base = declarative_base()
+from app.db.base import Base
+# Base = declarative_base()
 
 class Character(Base):
     """

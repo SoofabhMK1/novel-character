@@ -2,6 +2,62 @@
 -- 我们首先连接到正确的数据库
 -- \c novel_characters_db;
 
+-- =======================================================
+-- ==             插入世界观设定 (Lore) 数据            ==
+-- =======================================================
+
+-- 种族 (Race) 设定
+INSERT INTO lore_entries (category, key, name, description, attributes) VALUES
+(
+    'Race',
+    'Human',
+    '人类',
+    '最具适应力和数量最多的种族，遍布大陆的各个角落。他们寿命短暂，但充满野心和创造力，能够在各种环境中建立文明。',
+    '{"traits": ["适应性强", "多才多艺", "社会性强"], "typical_classes": ["战士", "法师", "盗贼"]}'::jsonb
+),
+(
+    'Race',
+    'Elf',
+    '精灵',
+    '优雅而长寿的古老种族，与自然和魔法有着深刻的联系。他们通常居住在古老的森林或与世隔绝的城市中，是天生的弓箭手和法师。',
+    '{"traits": ["长寿", "感知敏锐", "天生亲和魔法", "夜视能力"], "typical_classes": ["游侠", "德鲁伊", "大法师"]}'::jsonb
+),
+(
+    'Race',
+    'Dwarf',
+    '矮人',
+    '强壮而坚韧的山地民族，以其精湛的锻造工艺、对矿石和宝石的热爱以及豪迈的性格而闻名。他们是忠诚的盟友和顽强的战士。',
+    '{"traits": ["坚韧", "工艺大师", "黑暗视觉", "抗毒性"], "typical_classes": ["战士", "圣骑士", "符文师"]}'::jsonb
+),
+(
+    'Race',
+    'Orc',
+    '兽人',
+    '一个崇尚力量和荣誉的部落种族，通常体格魁梧，意志坚定。尽管外界对他们有刻板印象，但兽人社会内部有着复杂的传统和萨满信仰。',
+    '{"traits": ["力量强大", "意志坚定", "部落荣誉"], "typical_classes": ["狂战士", "萨满", "酋长"]}'::jsonb
+);
+
+-- 阵营 (Alignment) 设定
+INSERT INTO lore_entries (category, key, name, description) VALUES
+(
+    'Alignment',
+    'Lawful Good',
+    '守序善良',
+    '信奉通过秩序、规则和高尚的品德来创造至善的世界。他们是人民的守护者，是正义的化身，如圣骑士和正直的君王。'
+),
+(
+    'Alignment',
+    'Neutral Good',
+    '中立善良',
+    '致力于行善，但不拘泥于秩序或混乱的教条。他们相信良知是最好的指引，会尽其所能帮助他人，如善良的牧师或仁慈的隐士。'
+),
+(
+    'Alignment',
+    'Chaotic Good',
+    '混乱善良',
+    '追随自己内心的善良，并蔑视一切可能阻碍他们行善的官僚和规则。他们是自由的斗士和反抗暴政的英雄，如侠盗罗宾汉。'
+);
+
 -- 插入角色 1: 赛博朋克侦探
 INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, bloodline, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
 (

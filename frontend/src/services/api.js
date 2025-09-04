@@ -91,4 +91,12 @@ export default {
   getEnums() {
     return apiClient.get('/utils/enums');
   },
+  getLoreEntries(category) {
+    // 如果提供了 category，则按类别筛选
+    if (category) {
+      return apiClient.get(`/lore/?category=${category}`);
+    }
+    // 否则获取全部
+    return apiClient.get('/lore/');
+  },
 };
