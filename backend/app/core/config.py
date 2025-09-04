@@ -23,6 +23,8 @@ class Settings(BaseSettings):
 
     GOOGLE_API_KEY: Optional[str] = None
 
+    DEEPSEEK_API_KEY: Optional[str] = None
+
     @model_validator(mode='after')
     def assemble_db_connection(self) -> 'Settings':
         """

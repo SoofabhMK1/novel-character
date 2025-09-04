@@ -61,11 +61,10 @@ export default {
   // =======================================================
   // ==           新增：AI 生成 API 调用                ==
   // =======================================================
-  generateCharacterFromPrompt(prompt, useProxy = false, proxyUrl = '') {
+  generateCharacterFromPrompt(prompt, provider) {
     const requestData = {
       prompt: prompt,
-      use_proxy: useProxy,
-      proxy_url: proxyUrl
+      provider: provider
     };
     return apiClient.post('/ai/generate-character', requestData);
   },

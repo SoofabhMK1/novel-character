@@ -9,11 +9,28 @@
     <!-- ============================================== -->
     <!-- ==              AI 生成区域                 == -->
     <!-- ============================================== -->
-    <el-card v-if="featureFlags.ai_generation_enabled" shadow="never" class="ai-generation-card">
+    <el-card 
+      v-if="aiGenerationEnabled" 
+      shadow="never" 
+      class="ai-generation-card"
+      :class="selectedProviderTheme"
+    >
       <template #header>
-        <div class="card-header">
-          <strong>✨ AI 辅助创作</strong>
-          <span>输入简单的想法，让 AI 帮助你构建角色。</span>
+        <div class="card-header ai-header">
+          <div class="ai-title">
+            <strong>✨ AI 辅助创作</strong>
+            <span>输入简单的想法，让 AI 帮助你构建角色。</span>
+          </div>
+          <!-- 服务商切换按钮组 -->
+          <el-radio-group v-model="selectedProvider" size="small">
+            <el-radio-button 
+              v-for="provider in featureFlags.available_ai_providers"
+              :key="provider"
+              :label="provider"
+            >
+              {{ provider.toUpperCase() }}
+            </el-radio-button>
+          </el-radio-group>
         </div>
       </template>
       <el-input
@@ -25,22 +42,25 @@
         maxlength="200"
       />
       <div class="ai-actions">
-        <div class="proxy-settings">
-          <el-checkbox v-model="aiUseProxy" label="启用代理" size="small" />
-          <el-input
-            v-if="aiUseProxy"
-            v-model="aiProxyUrl"
-            placeholder="例如: http://127.0.0.1:7890"
-            size="small"
-            class="proxy-input"
-          />
-        </div>
+        <!-- 移除代理 UI, 替换为信息提示 -->
+        <el-alert 
+          title="网络提示" 
+          type="info" 
+          show-icon 
+          :closable="false"
+          description="国内网络访问 Gemini 可能需要代理支持。"
+          v-if="selectedProvider === 'gemini'"
+          style="flex-grow: 1; margin-right: 15px; background-color: transparent;"
+        />
+        <div v-else style="flex-grow: 1;"></div>
+        
         <el-button 
           type="primary" 
           @click="handleAIGenerate" 
           :loading="isGenerating"
+          :color="selectedProvider === 'gemini' ? '#4285F4' : '#19c37d'"
         >
-          {{ isGenerating ? '生成中...' : '生成角色' }}
+          {{ isGenerating ? '生成中...' : `使用 ${selectedProvider.toUpperCase()} 生成` }}
         </el-button>
       </div>
     </el-card>
@@ -176,15 +196,24 @@ const router = useRouter();
 
 const characterFormRef = ref(null);
 const loading = ref(true);
-const isGenerating = ref(false); // AI 生成加载状态
 const activeTab = ref('basic');
 const characterId = ref(route.params.id || null);
 
 // --- AI 相关状态 ---
-const featureFlags = reactive({ ai_generation_enabled: false });
+const featureFlags = reactive({ available_ai_providers: [] });
 const aiPrompt = ref('');
-const aiUseProxy = ref(false);
-const aiProxyUrl = ref(''); // 用户输入的代理地址
+const isGenerating = ref(false);
+const selectedProvider = ref(null); // 当前选中的服务商
+
+// --- 计算属性 ---
+const aiGenerationEnabled = computed(() => 
+  featureFlags.available_ai_providers && featureFlags.available_ai_providers.length > 0
+);
+// 动态主题类
+const selectedProviderTheme = computed(() => {
+  if (!selectedProvider.value) return '';
+  return `theme-${selectedProvider.value}`;
+});
 
 const isEditMode = computed(() => !!characterId.value);
 const pageTitle = computed(() => isEditMode.value ? '编辑角色' : '新建角色');
@@ -201,6 +230,7 @@ const defaultForm = () => ({
   height_cm: null,
   build: 'Average',
   status: 'Unknown',
+  bloodline: 'Unknown',
   alignment: 'True Neutral',
   personality_details: { core_traits: [] },
   appearance_details: { description: '' },
@@ -234,6 +264,13 @@ const fetchInitialData = async () => {
     Object.assign(enums, enumsResponse.data);
     Object.assign(featureFlags, featuresResponse.data);
 
+    if (aiGenerationEnabled.value) {
+      // 优先选择 deepseek，否则选择第一个可用的
+      selectedProvider.value = featureFlags.available_ai_providers.includes('deepseek')
+        ? 'deepseek'
+        : featureFlags.available_ai_providers[0];
+    }
+
     if (isEditMode.value) {
       const characterResponse = await api.getCharacter(characterId.value);
       characterForm.value = { ...defaultForm(), ...characterResponse.data };
@@ -256,8 +293,7 @@ const handleAIGenerate = async () => {
   try {
     const response = await api.generateCharacterFromPrompt(
       aiPrompt.value,
-      aiUseProxy.value,
-      aiProxyUrl.value
+      selectedProvider.value
     );
     // 用 AI 返回的数据覆盖表单，同时保留未生成字段的默认值
     characterForm.value = { ...defaultForm(), ...response.data };
@@ -317,7 +353,22 @@ onMounted(() => {
   border-top: 1px solid var(--el-border-color-lighter);
 }
 .ai-generation-card {
-  margin-bottom: 20px;
+  transition: border-color 0.3s ease;
+  border: 1px solid var(--el-border-color);
+}
+.ai-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.ai-title {
+  display: flex;
+  flex-direction: column;
+}
+.ai-title span {
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+  margin-top: 4px;
 }
 .ai-actions {
   display: flex;
@@ -325,12 +376,12 @@ onMounted(() => {
   align-items: center;
   margin-top: 15px;
 }
-.proxy-settings {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+
+/* --- 主题样式 --- */
+.theme-gemini {
+  border-color: #4285F4;
 }
-.proxy-input {
-  width: 220px;
+.theme-deepseek {
+  border-color: #19c37d;
 }
 </style>

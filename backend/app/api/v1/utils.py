@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from app.core import enums
 from app.core.config import settings
+from app.services import ai_manager
 
 router = APIRouter()
 
@@ -23,13 +24,9 @@ def get_all_enums():
 @router.get("/features", response_model=dict)
 def get_feature_flags():
     """
-    获取应用中的功能标志。
-    前端可以用这个接口来确定哪些功能是启用的。
+    返回一个功能开关列表，告诉前端哪些可选功能是可用的。
     """
-    # 从配置中获取功能标志
-    # 目前只有AI生成功能的标志
-    feature_flags = {
-        "ai_generation_enabled": settings.GOOGLE_API_KEY is not None
+    return {
+        # 调用 ai_manager 获取当前所有已配置的 AI 服务商列表
+        "available_ai_providers": ai_manager.get_available_providers()
     }
-    
-    return feature_flags

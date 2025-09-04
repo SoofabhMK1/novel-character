@@ -4,6 +4,7 @@ FROM python:3.11-slim as builder
 WORKDIR /app
 
 COPY requirements.txt .
+RUN pip config set global.index-url https://mirrors.aliyun.com/pypi/simple/
 
 RUN pip wheel --no-cache-dir --wheel-dir /wheels -r requirements.txt
 
