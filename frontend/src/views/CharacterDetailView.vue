@@ -190,11 +190,15 @@ const formattedMeasurements = computed(() => {
 
   // 获取 measurements 对象
   const measurements = character.value.measurements;
-
+  const measurementLabels = {
+    bust_cm: '胸围',
+    waist_cm: '腰围',
+    hip_cm: '臀围'
+  };
   // 将对象转换为 "Key: Value" 格式的字符串数组
   // Object.entries({ "胸围": 88, "腰围": 57 }) -> [ ['胸围', 88], ['腰围', 57] ]
   const parts = Object.entries(measurements).map(([key, value]) => {
-    return `${key}: ${value}`; // -> "胸围: 88"
+    return `${measurementLabels[key]}: ${value}`; // -> "胸围: 88"
   });
 
   // 使用 ' / ' 将数组元素连接成一个最终的字符串
