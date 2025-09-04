@@ -11,7 +11,6 @@
         </div>
 
         <!-- Navigation Menu -->
-        <!-- el-menu 不再被一个额外的 div 包裹 -->
         <el-menu
           :default-active="activeIndex"
           mode="horizontal"
@@ -21,9 +20,18 @@
           active-text-color="#ffffff"
           class="header-menu"
         >
-          <el-menu-item index="/">仪表盘</el-menu-item>
-          <el-menu-item index="/characters">角色列表</el-menu-item>
-          <el-menu-item index="/lore">设定集</el-menu-item>
+          <el-menu-item index="/">
+            <el-icon><House /></el-icon>
+            <span>仪表盘</span>
+          </el-menu-item>
+          <el-menu-item index="/characters">
+            <el-icon><User /></el-icon>
+            <span>角色列表</span>
+          </el-menu-item>
+          <el-menu-item index="/lore">
+            <el-icon><Collection /></el-icon>
+            <span>设定集</span>
+          </el-menu-item>
         </el-menu>
       </div>
     </el-header>
@@ -39,6 +47,8 @@
 <script setup>
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
+// 从 @element-plus/icons-vue 导入所需图标
+import { House, User, Collection } from '@element-plus/icons-vue';
 
 const route = useRoute();
 const activeIndex = computed(() => {
@@ -64,6 +74,7 @@ const activeIndex = computed(() => {
   background-color: #2c3e50;
   color: white;
   padding: 0 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加 subtle shadow 增加层次感 */
 }
 
 .header-content {
@@ -83,6 +94,11 @@ const activeIndex = computed(() => {
   align-items: center;
   text-decoration: none; /* 移除链接下划线 */
   color: inherit; /* 继承父元素的文字颜色 */
+  transition: opacity 0.3s;
+}
+
+.logo-link:hover {
+  opacity: 0.8; /* 添加悬停效果 */
 }
 
 .logo-image {
@@ -93,7 +109,8 @@ const activeIndex = computed(() => {
 
 .logo-title {
   margin: 0;
-  font-weight: 500;
+  font-size: 20px; /* 调整字体大小 */
+  font-weight: 600; /* 字体加粗 */
   white-space: nowrap;
 }
 
@@ -103,10 +120,26 @@ const activeIndex = computed(() => {
   flex-grow: 1; 
 }
 
+/* 菜单项样式 */
+.el-menu-item {
+  font-size: 16px; /* 统一菜单项字体大小 */
+  display: flex;
+  align-items: center;
+}
+
+.el-menu-item .el-icon {
+  margin-right: 8px; /* 图标和文字之间的间距 */
+}
+
 /* 增强激活状态的视觉效果 */
 .header-menu .el-menu-item.is-active {
-  border-bottom: 2px solid #409eff !important;
+  border-bottom: 3px solid #409eff !important; /* 加粗激活下划线 */
   background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 菜单项悬停效果 */
+.header-menu .el-menu-item:not(.is-active):hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
 }
 
 .app-main {

@@ -16,7 +16,7 @@ def get_character_profile_json_schema() -> str:
     # 使用一个多行 f-string 来构建最终的 schema 字符串
     schema = f"""
 {{
-    "name": "string (Required, Full name of the character, Must be in ENGLISH)",
+    "name": "string (Required, Full name of the character, Must be in CHINESE)",
     "nickname": "string (Optional, An alias or common name, Must be in CHINESE)",
     "age": "integer (Optional, The character's age in years. Example: 28)",
     "gender": "string (Required, Must be one of: {gender_options})",

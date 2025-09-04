@@ -6,23 +6,28 @@
       </template>
       <template #extra>
         <div class="action-buttons-header">
-          <el-button @click="openRelationshipDialog">管理关系</el-button>
+          <!-- ============================================== -->
+          <!-- ==            为按钮添加图标                == -->
+          <!-- ============================================== -->
+          <el-button @click="openRelationshipDialog" :icon="Connection">管理关系</el-button>
           <router-link :to="`/characters/${characterId}/edit`">
-            <el-button type="primary">编辑</el-button>
+            <el-button type="primary" :icon="Edit">编辑</el-button>
           </router-link>
         </div>
       </template>
     </el-page-header>
 
-    <!-- ============================================== -->
-    <!-- ==      关键修正：确保所有内容都在 Card 内部    == -->
-    <!-- ============================================== -->
     <div v-if="character" class="detail-layout-grid">
       
       <!-- 区域一：左上角 - 角色形象 -->
       <div class="character-image-card">
         <el-card shadow="never">
-          <template #header><strong>角色形象</strong></template>
+          <template #header>
+            <div class="card-header-with-icon">
+              <el-icon><i-ep-camera-filled /></el-icon>
+              <strong>角色形象</strong>
+            </div>
+          </template>
           <el-image 
             v-if="character.image_url"
             :src="character.image_url" 
@@ -31,7 +36,11 @@
             :preview-src-list="[character.image_url]" 
             preview-teleported
           >
-             <!-- ... (error slot) ... -->
+             <template #error>
+              <div class="image-slot">
+                <el-icon><i-ep-picture /></el-icon>
+              </div>
+            </template>
           </el-image>
           <el-empty v-else description="暂无图片" />
         </el-card>
@@ -40,21 +49,44 @@
       <!-- 区域二：右上角 - 核心信息 -->
       <div class="core-info-card">
         <el-card shadow="never">
-          <template #header><strong>核心档案</strong></template>
+          <template #header>
+            <div class="card-header-with-icon">
+              <el-icon><i-ep-tickets /></el-icon>
+              <strong>核心档案</strong>
+            </div>
+          </template>
+          <!-- ============================================== -->
+          <!-- ==      为 el-descriptions-item 添加图标      == -->
+          <!-- ============================================== -->
           <el-descriptions :column="1" border>
-            <el-descriptions-item label="全名">{{ character.name }}</el-descriptions-item>
-            <el-descriptions-item label="昵称">{{ character.nickname || '无' }}</el-descriptions-item>
-            <el-descriptions-item label="种族">
+            <el-descriptions-item>
+              <template #label><div class="cell-item"><el-icon><i-ep-user /></el-icon>全名</div></template>
+              {{ character.name }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label><div class="cell-item"><el-icon><i-ep-coffee-cup /></el-icon>昵称</div></template>
+              {{ character.nickname || '无' }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label><div class="cell-item"><el-icon><i-ep-magic-stick /></el-icon>种族</div></template>
               <el-link type="primary" @click="showLore('Race', character.race)">{{ character.race }}</el-link>
             </el-descriptions-item>
-            <el-descriptions-item label="职业">{{ character.occupation || '无' }}</el-descriptions-item>
-            <el-descriptions-item label="阵营">
+            <el-descriptions-item>
+              <template #label><div class="cell-item"><el-icon><i-ep-briefcase /></el-icon>职业</div></template>
+              {{ character.occupation || '无' }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label><div class="cell-item"><el-icon><i-ep-flag /></el-icon>阵营</div></template>
               <el-link type="primary" @click="showLore('Alignment', character.alignment)">{{ character.alignment }}</el-link>
             </el-descriptions-item>
-            <el-descriptions-item label="状态">
+            <el-descriptions-item>
+              <template #label><div class="cell-item"><el-icon><i-ep-odometer /></el-icon>状态</div></template>
               <el-link type="primary" @click="showLore('Status', character.status)">{{ character.status }}</el-link>
             </el-descriptions-item>
-            <el-descriptions-item label="血统">{{ character.bloodline }}</el-descriptions-item>
+            <el-descriptions-item>
+              <template #label><div class="cell-item"><el-icon><i-ep-cold-drink /></el-icon>血统</div></template>
+              {{ character.bloodline || '未设定' }}
+            </el-descriptions-item>
           </el-descriptions>
         </el-card>
       </div>
@@ -63,7 +95,11 @@
       <div class="detailed-info-card">
         <el-card shadow="never">
           <el-tabs type="border-card">
-            <el-tab-pane label="个性特征">
+            <!-- ============================================== -->
+            <!-- ==         为 el-tab-pane 添加图标          == -->
+            <!-- ============================================== -->
+            <el-tab-pane>
+              <template #label><span class="tab-label"><el-icon><i-ep-cpu /></el-icon> 个性特征</span></template>
               <el-descriptions :column="1" border>
                 <el-descriptions-item label="核心特质">
                   <el-tag v-for="trait in character.personality_details.core_traits" :key="trait" class="trait-tag" effect="plain">{{ trait }}</el-tag>
@@ -73,7 +109,8 @@
                 <el-descriptions-item label="弱点">{{ character.personality_details.weaknesses || '无' }}</el-descriptions-item>
               </el-descriptions>
             </el-tab-pane>
-            <el-tab-pane label="生理特征">
+            <el-tab-pane>
+              <template #label><span class="tab-label"><el-icon><i-ep-sugar /></el-icon> 生理特征</span></template>
                <el-descriptions :column="1" border>
                 <el-descriptions-item label="年龄">{{ character.age || '未知' }}</el-descriptions-item>
                 <el-descriptions-item label="身高">{{ character.height_cm ? `${character.height_cm} cm` : '未知' }}</el-descriptions-item>
@@ -86,7 +123,8 @@
             <!-- <el-descriptions-item label="当前状态">{{ character.status }}</el-descriptions-item> -->
             </el-descriptions>
             </el-tab-pane>
-            <el-tab-pane label="背景故事">
+            <el-tab-pane>
+              <template #label><span class="tab-label"><el-icon><i-ep-collection /></el-icon> 背景故事</span></template>
               <el-descriptions :column="1" border>
                 <el-descriptions-item label="家乡">{{ character.background_details.hometown || '未知' }}</el-descriptions-item>
                 <el-descriptions-item label="关键事件">{{ character.background_details.key_life_events || '无' }}</el-descriptions-item>
@@ -95,10 +133,9 @@
           </el-tabs>
         </el-card>
       </div>
-
     </div>
 
-    <el-skeleton v-else :rows="10" animated />
+    <el-skeleton v-else :rows="15" animated />
 
     <!-- ============================================== -->
     <!-- ==         新增：设定详情模态框             == -->
@@ -206,7 +243,7 @@
 import { ref, onMounted, reactive, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import api from '../services/api';
-import { Picture as IconPicture } from '@element-plus/icons-vue';
+import { Connection, Edit, Picture as IconPicture } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 
 // --- 基础状态和路由 ---
@@ -418,7 +455,6 @@ onMounted(() => {
 /* ==                主容器与页头样式                   == */
 /* ======================================================= */
 .detail-container {
-  /* 移除左右 padding，因为 main-content-wrapper 已经提供了 */
   padding: 0; 
 }
 
@@ -432,38 +468,65 @@ onMounted(() => {
 }
 
 /* ======================================================= */
-/* ==            最终的 CSS Grid 布局样式             == */
+/* ==            CSS Grid 布局样式                   == */
 /* ======================================================= */
 .detail-layout-grid {
   display: grid;
-  /* 定义两列，左列是图片的宽度，右列占据剩余空间 */
   grid-template-columns: 320px 1fr;
-  /* 定义行和列的间距 */
   gap: 24px;
 }
 
-/* 定义每个区域在网格中的位置 */
 .character-image-card {
-  grid-column: 1 / 2; /* 占据第 1 列 */
-  grid-row: 1;      /* 占据第 1 行 */
+  grid-column: 1 / 2;
+  grid-row: 1;
 }
 
 .core-info-card {
-  grid-column: 2 / 3; /* 占据第 2 列 */
-  grid-row: 1;      /* 占据第 1 行 */
+  grid-column: 2 / 3;
+  grid-row: 1;
 }
 
 .detailed-info-card {
-  grid-column: 1 / 3; /* 横跨两列 */
-  grid-row: 2;      /* 占据第 2 行 */
+  grid-column: 1 / 3;
+  grid-row: 2;
 }
 
 /* ======================================================= */
-/* ==                卡片内部元素样式                   == */
+/* ==     卡片内部元素样式 (包括新增的图标对齐样式)     == */
 /* ======================================================= */
+
+/* --- 新增：带图标的卡片标题 --- */
+.card-header-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: bold;
+}
+.card-header-with-icon .el-icon {
+  font-size: 18px;
+}
+
+/* --- 新增：带图标的描述列表标签 --- */
+.cell-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.cell-item .el-icon {
+  font-size: 16px;
+}
+
+/* --- 新增：带图标的 Tabs 标签 --- */
+.tab-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .character-image {
   width: 100%;
-  height: 400px; /* 可以根据喜好调整 */
+  height: 400px;
   border-radius: 4px;
   background-color: #f5f7fa;
 }
@@ -481,7 +544,7 @@ onMounted(() => {
 
 .trait-tag {
   margin-right: 8px;
-  margin-bottom: 8px; /* 用于在换行时提供垂直间距 */
+  margin-bottom: 8px;
 }
 
 /* ======================================================= */
@@ -523,14 +586,14 @@ onMounted(() => {
 /* ======================================================= */
 /* ==                 响应式设计 (小屏幕)               == */
 /* ======================================================= */
-@media (max-width: 992px) { /* 在平板尺寸时触发 */
+@media (max-width: 992px) {
   .detail-layout-grid {
-    grid-template-columns: 1fr; /* 变为一列 */
+    grid-template-columns: 1fr;
   }
   .character-image-card,
   .core-info-card,
   .detailed-info-card {
-    grid-column: 1; /* 所有项都占据唯一的列 */
+    grid-column: 1;
   }
   .core-info-card {
     grid-row: 2;

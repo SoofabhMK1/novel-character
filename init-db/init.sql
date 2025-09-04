@@ -62,7 +62,7 @@ INSERT INTO lore_entries (category, key, name, description) VALUES
 INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, bloodline, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
 (
     'a1b2c3d4-e5f6-7890-1234-567890abcdef', -- 使用一个固定的 UUID 以便测试
-    'Kaelen ''Kae'' Vance', -- 注意：SQL 中单引号需要转义，写成两个单引号 ''
+    '凯文',
     '幽灵',
     32,
     '信息掮客 / 私家侦探',
@@ -102,7 +102,7 @@ INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_fi
 INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, bloodline, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
 (
     'b2c3d4e5-f6a7-8901-2345-67890abcdef1',
-    'Lyra Silvanus',
+    '兰斯特',
     '星语者',
     120,
     '星辰高塔的大法师 / 古代史学者',
@@ -138,7 +138,7 @@ INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_fi
 INSERT INTO characters (id, name, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, bloodline, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
 (
     '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-    'Grommash Bloodfang',
+    '格罗姆',
     25,
     '血牙部落酋长',
     210,
@@ -167,4 +167,339 @@ INSERT INTO characters (id, name, age, occupation, height_cm, image_filename, ge
     '{
         "voice": "洪亮、粗犷"
     }'::jsonb
+);
+
+INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, bloodline, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
+(
+    'c3d4e5f6-a7b8-9012-3456-7890abcdef12',
+    '格伦·石须',
+    '铁砧',
+    250,
+    '铁炉堡的传奇铁匠 / 符文守护者',
+    145,
+    'grom_stonebeard.jpg',
+    'MALE',
+    'HEAVYSET',
+    'DWARF',
+    'LAWFUL_NEUTRAL',
+    'ALIVE',
+    'ANCIENT',
+    '{}'::jsonb,
+    '{
+        "core_traits": ["固执", "忠诚", "勇敢", "技艺精湛", "沉默寡言"],
+        "mbti": "ISTJ"
+    }'::jsonb,
+    '{
+        "hair": "火红色的长胡子，精心编成数条辫子，上面镶嵌着符文石",
+        "eyes": "深邃的棕色眼眸，如同熔岩",
+        "clothing_style": "厚重的符文铠甲，手持一柄巨大的战锤"
+    }'::jsonb,
+    '{
+        "hometown": "铁炉堡"
+    }'::jsonb,
+    '{}'::jsonb
+);
+
+-- 角色3: 勇猛的兽人酋长
+INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, bloodline, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
+(
+    'd4e5f6a7-b8c9-0123-4567-890abcdef123',
+    '杜尔克·碎颅者',
+    '鲜血之爪',
+    45,
+    '血牙部落酋长',
+    210,
+    'durok_skullcrusher.jpg',
+    'MALE',
+    'MUSCULAR',
+    'ORC',
+    'CHAOTIC_NEUTRAL',
+    'ALIVE',
+    'COMMON',
+    '{}'::jsonb,
+    '{
+        "core_traits": ["好战", "狡猾", "有领导力", "实用主义", "不畏强权"],
+        "mbti": "ESTP"
+    }'::jsonb,
+    '{
+        "hair": "黑色的长发，梳成一束顶髻",
+        "eyes": "凶狠的红色眼睛",
+        "clothing_style": "由皮革和兽骨制成的简易护甲，身上有许多战斗疤痕和部落图腾纹身"
+    }'::jsonb,
+    '{
+        "hometown": "破碎平原"
+    }'::jsonb,
+    '{}'::jsonb
+);
+
+-- 角色4: 高尚的人类骑士
+INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, bloodline, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
+(
+    'e5f6a7b8-c9d0-1234-5678-90abcdef1234',
+    '亚瑟·潘德拉贡',
+    '晨曦之刃',
+    32,
+    '圣光骑士团团长',
+    185,
+    'arthur_pendragon.jpg',
+    'MALE',
+    'ATHLETIC',
+    'HUMAN',
+    'LAWFUL_GOOD',
+    'ALIVE',
+    'ROYAL',
+    '{}'::jsonb,
+    '{
+        "core_traits": ["正直", "富有同情心", "天生的领袖", "有责任感", "理想主义"],
+        "mbti": "ENFJ"
+    }'::jsonb,
+    '{
+        "hair": "灿烂的金色短发",
+        "eyes": "坚定而温暖的蓝色眼眸",
+        "clothing_style": "闪亮的全身板甲，披着印有王国徽章的白色披风"
+    }'::jsonb,
+    '{
+        "hometown": "卡美洛王城"
+    }'::jsonb,
+    '{}'::jsonb
+);
+
+-- 角色5: 混乱的哥布林盗贼
+INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, bloodline, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
+(
+    'f6a7b8c9-d0e1-2345-6789-0abcdef12345',
+    '斯尼克',
+    '影贼',
+    25,
+    '盗贼 / 炼金术士',
+    95,
+    'snik_goblin.jpg',
+    'MALE',
+    'SLIM',
+    'GOBLIN',
+    'CHAOTIC_EVIL',
+    'ALIVE',
+    'UNKNOWN',
+    '{}'::jsonb,
+    '{
+        "core_traits": ["贪婪", "神经质", "对爆炸物有异常的热情", "机会主义", "胆小但狡诈"],
+        "mbti": "ENTP"
+    }'::jsonb,
+    '{
+        "hair": "稀疏的绿色头发",
+        "eyes": "滴溜溜转的黄色大眼睛",
+        "clothing_style": "破旧的皮甲，腰带上挂满了各种小瓶子、工具和偷来的小玩意"
+    }'::jsonb,
+    '{
+        "hometown": "污水巷"
+    }'::jsonb,
+    '{}'::jsonb
+);
+
+-- 角色6: 冷酷的仿生人刺客
+INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, bloodline, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
+(
+    'a7b8c9d0-e1f2-3456-7890-1bcdef123456',
+    '单元734',
+    '幽灵',
+    5,
+    '秘密组织的刺客',
+    180,
+    'unit_734.jpg',
+    'NON_BINARY',
+    'ATHLETIC',
+    'ANDROID',
+    'TRUE_NEUTRAL',
+    'ALIVE',
+    'UNKNOWN',
+    '{}'::jsonb,
+    '{
+        "core_traits": ["逻辑至上", "高效", "沉默", "任务导向", "缺乏情感表达"],
+        "mbti": "ISTP"
+    }'::jsonb,
+    '{
+        "hair": "银白色合成纤维短发",
+        "eyes": "发出淡蓝色光芒的电子眼",
+        "clothing_style": "贴身的黑色纳米作战服，能适应各种环境"
+    }'::jsonb,
+    '{
+        "hometown": "“摇篮”实验室"
+    }'::jsonb,
+    '{}'::jsonb
+);
+
+-- 角色7: 化为人形的古龙
+INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, bloodline, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
+(
+    '89012345-6789-0abc-def1-234567890abc',
+    '伊格尼丝',
+    '烬心',
+    8000,
+    '沉睡的古龙 / 历史的观察者',
+    178,
+    'ignis_dragon.jpg',
+    'FEMALE',
+    'SLIM',
+    'DRAGON',
+    'NEUTRAL_GOOD',
+    'ALIVE',
+    'DIVINE',
+    '{
+        "bust_cm": 92,
+        "waist_cm": 64,
+        "hip_cm": 94
+    }'::jsonb,
+    '{
+        "core_traits": ["古老而智慧", "慵懒", "对凡人事物感到有趣", "拥有强大的力量但很少使用", "守护着某种秘密"],
+        "mbti": "INTP"
+    }'::jsonb,
+    '{
+        "hair": "如同燃烧火焰般的深红色长卷发",
+        "eyes": "金色竖瞳，偶尔会闪烁着火焰",
+        "clothing_style": "华丽的深色长裙，配有黑曜石和黄金饰品"
+    }'::jsonb,
+    '{
+        "hometown": "龙眠神殿"
+    }'::jsonb,
+    '{}'::jsonb
+);
+
+-- 角色8: 被诅咒的流浪者
+INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, bloodline, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
+(
+    '12345678-90ab-cdef-1234-567890abcdef',
+    '卡西安',
+    '影缚者',
+    90,
+    '流浪者 / 诅咒研究者',
+    182,
+    'cassian_shadowbound.jpg',
+    'MALE',
+    'ATHLETIC',
+    'HUMAN',
+    'CHAOTIC_NEUTRAL',
+    'ALIVE',
+    'CURSED',
+    '{}'::jsonb,
+    '{
+        "core_traits": ["愤世嫉俗", "坚忍", "敏锐", "有强烈的求生欲", "渴望救赎"],
+        "mbti": "INTJ"
+    }'::jsonb,
+    '{
+        "hair": "乌鸦般的黑色乱发，其中夹杂着几缕因诅咒而生的银丝",
+        "eyes": "深灰色的眼眸，仿佛藏着无尽的疲惫与秘密",
+        "clothing_style": "实用的深色旅行装，一件磨损的皮质风衣从不离身"
+    }'::jsonb,
+    '{
+        "hometown": "已成废墟的“灰烬村”"
+    }'::jsonb,
+    '{}'::jsonb
+);
+
+-- 角色9: 虔诚的月神祭司
+INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, bloodline, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
+(
+    '23456789-0abc-def1-2345-67890abcdef1',
+    '塞拉菲娜',
+    '月光咏者',
+    350,
+    '月神殿的大祭司 / 治愈者',
+    170,
+    'seraphina_moonsinger.jpg',
+    'FEMALE',
+    'SLIM',
+    'ELF',
+    'NEUTRAL_GOOD',
+    'ALIVE',
+    'DIVINE',
+    '{
+        "bust_cm": 88,
+        "waist_cm": 62,
+        "hip_cm": 90
+    }'::jsonb,
+    '{
+        "core_traits": ["温和", "富有同情心", "坚定", "无私", "信仰虔诚"],
+        "mbti": "ISFJ"
+    }'::jsonb,
+    '{
+        "hair": "银色的长发，如同流动的月光，常常用花朵和藤蔓装饰",
+        "eyes": "湖水般清澈的蓝色眼眸，充满了善意",
+        "clothing_style": "飘逸的白色祭司袍，上面用银线绣着月亮的循环图案"
+    }'::jsonb,
+    '{
+        "hometown": "月光林地"
+    }'::jsonb,
+    '{
+        "tone": "声音轻柔但充满力量，总是能安抚人心"
+    }'::jsonb
+);
+
+-- 角色10: 油滑的港口走私贩
+INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, bloodline, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
+(
+    '34567890-abcd-ef12-3456-7890abcdef12',
+    '芬恩',
+    '快手',
+    28,
+    '走私贩 / 自由商人 / “消息通”',
+    179,
+    'finn_quickhand.jpg',
+    'MALE',
+    'AVERAGE',
+    'HUMAN',
+    'CHAOTIC_NEUTRAL',
+    'ALIVE',
+    'COMMON',
+    '{}'::jsonb,
+    '{
+        "core_traits": ["机智", "幽默", "善于交际", "极其务实", "对权威不屑一顾"],
+        "mbti": "ESTP"
+    }'::jsonb,
+    '{
+        "hair": "棕色的短发，总是有些凌乱",
+        "eyes": "灵动的绿色眼睛，透露出狡黠的光芒",
+        "clothing_style": "舒适耐磨的皮夹克和裤子，有许多隐藏的口袋"
+    }'::jsonb,
+    '{
+        "hometown": "港口城市“自由港”"
+    }'::jsonb,
+    '{
+        "habits": "喜欢使用俚语和双关语，说话语速快"
+    }'::jsonb
+);
+
+-- 角色11: 被废黜的贵族
+INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, bloodline, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
+(
+    '4567890a-bcde-f123-4567-890abcdef123',
+    '伊莎贝拉·冯·克洛斯',
+    '冬日玫瑰',
+    26,
+    '没落贵族 / 阴谋家',
+    168,
+    'isabella_von_kloss.jpg',
+    'FEMALE',
+    'SLIM',
+    'HUMAN',
+    'LAWFUL_EVIL',
+    'ALIVE',
+    'NOBLE',
+    '{
+        "bust_cm": 85,
+        "waist_cm": 59,
+        "hip_cm": 88
+    }'::jsonb,
+    '{
+        "core_traits": ["野心勃勃", "精于算计", "高傲", "有魅力", "为达目的不择手段"],
+        "mbti": "ENTJ"
+    }'::jsonb,
+    '{
+        "hair": "铂金色的长发，总是梳理得一丝不苟，盘成复杂的发髻",
+        "eyes": "冰蓝色的眼眸，锐利而冷漠",
+        "clothing_style": "即使处境艰难，也坚持穿着剪裁合体的深色系贵族服饰，保持着最后的体面"
+    }'::jsonb,
+    '{
+        "hometown": "已被篡夺的“鹰巢城”"
+    }'::jsonb,
+    '{}'::jsonb
 );
