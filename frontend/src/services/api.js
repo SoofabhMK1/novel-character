@@ -36,7 +36,7 @@ export default {
       'name', 'nickname', 'age', 'gender', 'race', 'occupation',
       'height_cm', 'build', 'status', 'alignment', 'image_filename',
       'measurements', 'personality_details', 'appearance_details',
-      'background_details', 'speech_patterns'
+      'background_details', 'speech_patterns', 'bloodline'
     ]);
     return apiClient.post('/characters/', dataToSend);
   },
@@ -48,7 +48,7 @@ export default {
       'name', 'nickname', 'age', 'gender', 'race', 'occupation',
       'height_cm', 'build', 'status', 'alignment', 'image_filename',
       'measurements', 'personality_details', 'appearance_details',
-      'background_details', 'speech_patterns'
+      'background_details', 'speech_patterns', 'bloodline'
     ]);
     return apiClient.put(`/characters/${id}`, dataToSend);
   },

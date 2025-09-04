@@ -17,66 +17,80 @@
     <!-- ============================================== -->
     <!-- ==      关键修正：确保所有内容都在 Card 内部    == -->
     <!-- ============================================== -->
-    <el-card v-if="character" shadow="never">
-      <el-row :gutter="30">
-        <!-- 左侧：描述列表 -->
-        <el-col :xs="24" :md="16">
-          <el-descriptions :column="2" border>
-            <!-- 基础信息 -->
-            <el-descriptions-item label="全名">{{ character.name }}</el-descriptions-item>
-            <el-descriptions-item label="昵称">{{ character.nickname || '无' }}</el-descriptions-item>
-            <el-descriptions-item label="年龄">{{ character.age || '未知' }}</el-descriptions-item>
-            <el-descriptions-item label="种族">{{ character.race }}</el-descriptions-item>
-            <el-descriptions-item label="性别">{{ character.gender }}</el-descriptions-item>
-            <el-descriptions-item label="职业">{{ character.occupation || '无' }}</el-descriptions-item>
-            <el-descriptions-item label="身高">{{ character.height_cm ? `${character.height_cm} cm` : '未知' }}</el-descriptions-item>
-            <el-descriptions-item label="体型">{{ character.build }}</el-descriptions-item>
-            <el-descriptions-item label="尺寸">
-              {{ formattedMeasurements }}
-            </el-descriptions-item>
-            <el-descriptions-item label="当前状态">{{ character.status }}</el-descriptions-item>
-            <el-descriptions-item label="血统">{{ character.bloodline }}</el-descriptions-item>
-            
-            <!-- 个性特征 -->
-            <el-descriptions-item label="核心特质" :span="2">
-              <el-tag 
-                v-for="trait in character.personality_details.core_traits" 
-                :key="trait"
-                class="trait-tag"
-                effect="plain"
-              >
-                {{ trait }}
-              </el-tag>
-            </el-descriptions-item>
-            <el-descriptions-item label="阵营">{{ character.alignment }}</el-descriptions-item>
-            <el-descriptions-item label="MBTI">{{ character.personality_details.mbti || '未设定' }}</el-descriptions-item>
-            <el-descriptions-item label="优点" :span="2">{{ character.personality_details.strengths || '无' }}</el-descriptions-item>
-            <el-descriptions-item label="弱点" :span="2">{{ character.personality_details.weaknesses || '无' }}</el-descriptions-item>
-            
-            <!-- 背景故事 -->
-            <el-descriptions-item label="家乡" :span="2">{{ character.background_details.hometown || '未知' }}</el-descriptions-item>
-            <el-descriptions-item label="关键事件" :span="2">{{ character.background_details.key_life_events || '无' }}</el-descriptions-item>
-          </el-descriptions>
-        </el-col>
-
-        <!-- 右侧：角色图片 -->
-        <el-col :xs="24" :md="8">
+    <div v-if="character" class="detail-layout-grid">
+      
+      <!-- 区域一：左上角 - 角色形象 -->
+      <div class="character-image-card">
+        <el-card shadow="never">
+          <template #header><strong>角色形象</strong></template>
           <el-image 
             v-if="character.image_url"
             :src="character.image_url" 
-            fit="contain"
+            fit="cover"
             class="character-image"
+            :preview-src-list="[character.image_url]" 
+            preview-teleported
           >
-            <template #error>
-              <div class="image-slot">
-                <el-icon><icon-picture /></el-icon>
-              </div>
-            </template>
+             <!-- ... (error slot) ... -->
           </el-image>
           <el-empty v-else description="暂无图片" />
-        </el-col>
-      </el-row>
-    </el-card>
+        </el-card>
+      </div>
+
+      <!-- 区域二：右上角 - 核心信息 -->
+      <div class="core-info-card">
+        <el-card shadow="never">
+          <template #header><strong>核心档案</strong></template>
+          <el-descriptions :column="1" border>
+            <el-descriptions-item label="全名">{{ character.name }}</el-descriptions-item>
+            <el-descriptions-item label="昵称">{{ character.nickname || '无' }}</el-descriptions-item>
+            <el-descriptions-item label="种族">{{ character.race }}</el-descriptions-item>
+            <el-descriptions-item label="职业">{{ character.occupation || '无' }}</el-descriptions-item>
+            <el-descriptions-item label="阵营">{{ character.alignment }}</el-descriptions-item>
+            <el-descriptions-item label="状态">{{ character.status }}</el-descriptions-item>
+            <el-descriptions-item label="血统">{{ character.bloodline }}</el-descriptions-item>
+          </el-descriptions>
+        </el-card>
+      </div>
+
+      <!-- 区域三：下方整行 - 详细资料 (使用 Tabs) -->
+      <div class="detailed-info-card">
+        <el-card shadow="never">
+          <el-tabs type="border-card">
+            <el-tab-pane label="个性特征">
+              <el-descriptions :column="1" border>
+                <el-descriptions-item label="核心特质">
+                  <el-tag v-for="trait in character.personality_details.core_traits" :key="trait" class="trait-tag" effect="plain">{{ trait }}</el-tag>
+                </el-descriptions-item>
+                <el-descriptions-item label="MBTI">{{ character.personality_details.mbti || '未设定' }}</el-descriptions-item>
+                <el-descriptions-item label="优点">{{ character.personality_details.strengths || '无' }}</el-descriptions-item>
+                <el-descriptions-item label="弱点">{{ character.personality_details.weaknesses || '无' }}</el-descriptions-item>
+              </el-descriptions>
+            </el-tab-pane>
+            <el-tab-pane label="生理特征">
+               <el-descriptions :column="1" border>
+                <el-descriptions-item label="年龄">{{ character.age || '未知' }}</el-descriptions-item>
+                <el-descriptions-item label="身高">{{ character.height_cm ? `${character.height_cm} cm` : '未知' }}</el-descriptions-item>
+                <el-descriptions-item label="体型">{{ character.build }}</el-descriptions-item>
+                <el-descriptions-item label="性别">{{ character.gender }}</el-descriptions-item>
+            <el-descriptions-item label="尺寸">
+              {{ formattedMeasurements }}
+            </el-descriptions-item>
+            <el-descriptions-item label="特征">{{ character.appearance_details.distinguishing_features }}</el-descriptions-item>
+            <!-- <el-descriptions-item label="当前状态">{{ character.status }}</el-descriptions-item> -->
+            </el-descriptions>
+            </el-tab-pane>
+            <el-tab-pane label="背景故事">
+              <el-descriptions :column="1" border>
+                <el-descriptions-item label="家乡">{{ character.background_details.hometown || '未知' }}</el-descriptions-item>
+                <el-descriptions-item label="关键事件">{{ character.background_details.key_life_events || '无' }}</el-descriptions-item>
+              </el-descriptions>
+            </el-tab-pane>
+          </el-tabs>
+        </el-card>
+      </div>
+
+    </div>
 
     <el-skeleton v-else :rows="10" animated />
 
@@ -324,22 +338,60 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* ======================================================= */
+/* ==                主容器与页头样式                   == */
+/* ======================================================= */
 .detail-container {
-  padding: 0 24px 24px 24px;
+  /* 移除左右 padding，因为 main-content-wrapper 已经提供了 */
+  padding: 0; 
 }
+
 .page-header {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
-.trait-tag {
-  margin-right: 8px;
-  margin-bottom: 8px;
+
+.action-buttons-header {
+  display: flex;
+  gap: 10px;
 }
+
+/* ======================================================= */
+/* ==            最终的 CSS Grid 布局样式             == */
+/* ======================================================= */
+.detail-layout-grid {
+  display: grid;
+  /* 定义两列，左列是图片的宽度，右列占据剩余空间 */
+  grid-template-columns: 320px 1fr;
+  /* 定义行和列的间距 */
+  gap: 24px;
+}
+
+/* 定义每个区域在网格中的位置 */
+.character-image-card {
+  grid-column: 1 / 2; /* 占据第 1 列 */
+  grid-row: 1;      /* 占据第 1 行 */
+}
+
+.core-info-card {
+  grid-column: 2 / 3; /* 占据第 2 列 */
+  grid-row: 1;      /* 占据第 1 行 */
+}
+
+.detailed-info-card {
+  grid-column: 1 / 3; /* 横跨两列 */
+  grid-row: 2;      /* 占据第 2 行 */
+}
+
+/* ======================================================= */
+/* ==                卡片内部元素样式                   == */
+/* ======================================================= */
 .character-image {
   width: 100%;
-  height: 400px; /* 给一个固定高度 */
-  background-color: #f5f7fa;
+  height: 400px; /* 可以根据喜好调整 */
   border-radius: 4px;
+  background-color: #f5f7fa;
 }
+
 .image-slot {
   display: flex;
   justify-content: center;
@@ -350,33 +402,65 @@ onMounted(() => {
   color: var(--el-text-color-secondary);
   font-size: 30px;
 }
-.action-buttons-header {
-  display: flex;
-  gap: 10px;
+
+.trait-tag {
+  margin-right: 8px;
+  margin-bottom: 8px; /* 用于在换行时提供垂直间距 */
 }
+
+/* ======================================================= */
+/* ==                关系管理模态框样式                 == */
+/* ======================================================= */
 .add-relationship-card {
   margin-bottom: 20px;
+  background-color: #fafafa;
+  border-radius: 4px;
 }
+
+.relationship-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 15px;
+}
+
+.relationship-form .el-form-item {
+  margin-bottom: 0;
+}
+
+.form-select {
+  width: 220px;
+}
+
 .relationship-cell {
   display: flex;
   align-items: center;
   gap: 8px;
 }
+
 .character-name {
   color: var(--el-color-primary);
-}
-.relationship-form {
-  display: flex;
-  flex-wrap: wrap; /* 允许换行 */
-  gap: 10px;
+  font-weight: bold;
 }
 
-.relationship-form .el-form-item {
-  margin-bottom: 0; /* inline 模式下不需要底部 margin */
-}
 
-.form-select {
-  width: 200px; /* 给下拉框一个固定的、足够的宽度 */
+/* ======================================================= */
+/* ==                 响应式设计 (小屏幕)               == */
+/* ======================================================= */
+@media (max-width: 992px) { /* 在平板尺寸时触发 */
+  .detail-layout-grid {
+    grid-template-columns: 1fr; /* 变为一列 */
+  }
+  .character-image-card,
+  .core-info-card,
+  .detailed-info-card {
+    grid-column: 1; /* 所有项都占据唯一的列 */
+  }
+  .core-info-card {
+    grid-row: 2;
+  }
+  .detailed-info-card {
+    grid-row: 3;
+  }
 }
-
 </style>
