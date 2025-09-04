@@ -42,8 +42,8 @@ class Settings(BaseSettings):
         return self
 
     class Config:
-        # env_file = "../.env"
-        pass
+        env_file = ".env"
+        env_file_encoding = "utf-8"
 
 # 创建一个全局可用的配置实例
 settings = Settings()

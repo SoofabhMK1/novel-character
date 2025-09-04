@@ -3,7 +3,7 @@
 -- \c novel_characters_db;
 
 -- 插入角色 1: 赛博朋克侦探
-INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
+INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, bloodline, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
 (
     'a1b2c3d4-e5f6-7890-1234-567890abcdef', -- 使用一个固定的 UUID 以便测试
     'Kaelen ''Kae'' Vance', -- 注意：SQL 中单引号需要转义，写成两个单引号 ''
@@ -17,6 +17,7 @@ INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_fi
     'HUMAN',
     'CHAOTIC_NEUTRAL',
     'ALIVE',
+    'NOBLE',
     '{}'::jsonb, -- 空的 measurements JSONB
     '{
         "core_traits": ["愤世嫉俗", "观察力敏锐", "足智谋", "忠于自己的准则", "有黑色幽默感"],
@@ -42,7 +43,7 @@ INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_fi
 );
 
 -- 插入角色 2: 精灵法师/学者
-INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
+INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, bloodline, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
 (
     'b2c3d4e5-f6a7-8901-2345-67890abcdef1',
     'Lyra Silvanus',
@@ -56,6 +57,7 @@ INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_fi
     'ELF',
     'LAWFUL_GOOD',
     'ALIVE',
+    'NOBLE',
     '{
         "bust_cm": 86,
         "waist_cm": 60,
@@ -77,7 +79,7 @@ INSERT INTO characters (id, name, nickname, age, occupation, height_cm, image_fi
 );
 
 -- 插入角色 3: 兽人部落的年轻酋长
-INSERT INTO characters (id, name, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
+INSERT INTO characters (id, name, age, occupation, height_cm, image_filename, gender, build, race, alignment, status, bloodline, measurements, personality_details, appearance_details, background_details, speech_patterns) VALUES
 (
     '3fa85f64-5717-4562-b3fc-2c963f66afa6',
     'Grommash Bloodfang',
@@ -90,6 +92,7 @@ INSERT INTO characters (id, name, age, occupation, height_cm, image_filename, ge
     'ORC',
     'NEUTRAL_GOOD',
     'ALIVE',
+    'ANCIENT',
     '{}'::jsonb,
     '{
         "core_traits": ["勇敢", "直率", "有责任感", "尊重传统", "略显冲动"],

@@ -35,6 +35,7 @@
               {{ formattedMeasurements }}
             </el-descriptions-item>
             <el-descriptions-item label="当前状态">{{ character.status }}</el-descriptions-item>
+            <el-descriptions-item label="血统">{{ character.bloodline }}</el-descriptions-item>
             
             <!-- 个性特征 -->
             <el-descriptions-item label="核心特质" :span="2">

@@ -60,3 +60,14 @@ class Status(str, enum.Enum):
     DECEASED = "Deceased"
     MISSING_IN_ACTION = "Missing in Action"
     UNKNOWN = "Unknown"
+
+class Bloodline(str, enum.Enum):
+    """角色的血统枚举"""
+    ROYAL = "Royal"  # 皇室血统
+    NOBLE = "Noble"  # 贵族血统
+    COMMON = "Common"  # 平民血统
+    ANCIENT = "Ancient"  # 远古血统
+    DIVINE = "Divine"  # 神圣血统
+    CURSED = "Cursed"  # 诅咒血统
+    MIXED = "Mixed"  # 混合血统
+    UNKNOWN = "Unknown"  # 未知血统

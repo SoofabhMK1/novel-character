@@ -5,7 +5,7 @@ from pydantic import computed_field
 from pydantic import BaseModel, ConfigDict
 
 from app.core.enums import (Alignment, BuildType, Gender, Race, RelationshipType,
-                            Status)
+                            Status, Bloodline)
 
 # ===================================================================
 # Schemas for Nested JSONB Fields
@@ -107,6 +107,7 @@ class CharacterBase(BaseModel):
     race: Race = Race.OTHER
     alignment: Alignment = Alignment.TRUE_NEUTRAL
     status: Status = Status.UNKNOWN
+    bloodline: Bloodline = Bloodline.UNKNOWN
     
     # 使用嵌套的 Schema 来定义 JSONB 字段的结构
     measurements: MeasurementsSchema = MeasurementsSchema()
@@ -138,6 +139,7 @@ class CharacterUpdate(BaseModel):
     race: Optional[Race] = None
     alignment: Optional[Alignment] = None
     status: Optional[Status] = None
+    bloodline: Optional[Bloodline] = None
     measurements: Optional[MeasurementsSchema] = None
     personality_details: Optional[PersonalitySchema] = None
     appearance_details: Optional[Dict[str, Any]] = None

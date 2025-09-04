@@ -11,6 +11,7 @@ def get_character_profile_json_schema() -> str:
     build_options = ", ".join([f"'{e.value}'" for e in enums.BuildType])
     status_options = ", ".join([f"'{e.value}'" for e in enums.Status])
     alignment_options = ", ".join([f"'{e.value}'" for e in enums.Alignment])
+    bloodline_options = ", ".join([f"'{e.value}'" for e in enums.Bloodline])
 
     # 使用一个多行 f-string 来构建最终的 schema 字符串
     schema = f"""
@@ -24,6 +25,7 @@ def get_character_profile_json_schema() -> str:
     "height_cm": "integer (Required, Height in centimeters. Only provide the number, WITHOUT units. Example: 175)",
     "build": "string (Required, Must be one of: {build_options})",
     "status": "string (Required, Must be one of: {status_options})",
+    "bloodline": "string (Required, Must be one of: {bloodline_options})",
     "alignment": "string (Required, Must be one of: {alignment_options})",
     "image_filename": "null (This field MUST be null. Do not generate any value for it.)",
     "measurements": {{

@@ -19,6 +19,7 @@ from app.core.enums import (
     Race,
     Alignment,
     Status,
+    Bloodline,
 )
 
 Base = declarative_base()
@@ -44,6 +45,7 @@ class Character(Base):
     race = Column(SQLAlchemyEnum(Race), default=Race.OTHER)
     alignment = Column(SQLAlchemyEnum(Alignment), default=Alignment.TRUE_NEUTRAL)
     status = Column(SQLAlchemyEnum(Status), default=Status.UNKNOWN)
+    bloodline = Column(SQLAlchemyEnum(Bloodline), default=Bloodline.UNKNOWN)
 
     # --- JSONB 灵活特征列 ---
     measurements = Column(JSONB)        # 存储三围等

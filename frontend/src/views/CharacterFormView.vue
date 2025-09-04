@@ -127,6 +127,13 @@
                   </el-radio-group>
                 </el-form-item>
               </el-col>
+              <el-col :xs="24" :sm="12">
+                <el-form-item label="血统" prop="bloodline">
+                  <el-select v-model="characterForm.bloodline" placeholder="请选择血统" style="width: 100%;">
+                    <el-option v-for="item in enums.Bloodline" :key="item" :label="item" :value="item" />
+                  </el-select>
+                </el-form-item>
+              </el-col>
               <el-col :span="24">
                 <el-form-item label="核心特质" prop="personality_details.core_traits">
                   <el-input v-model="coreTraitsInput" placeholder="特质之间用英文逗号 , 分隔" />
