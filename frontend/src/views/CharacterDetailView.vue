@@ -294,35 +294,23 @@ const fetchAllLoreData = async () => {
 
 // --- 新增：显示设定详情的函数 ---
 const showLore = (category, key) => {
-  // 如果 key 不存在，直接返回，防止 toUpperCase() 报错
   if (!key) {
-    console.error("Invalid key provided:", key);
     currentLoreEntry.value = null;
     loreDialogVisible.value = true;
     return;
   }
   
-  // --- 核心修正：将传入的 key 转换为大写 ---
-  const upperCaseKey = key.toUpperCase();
-
-  console.log(`Attempting to show lore for Category: ${category}, Original Key: ${key}, Uppercase Key: ${upperCaseKey}`);
-  console.log("Lore Cache Object:", JSON.parse(JSON.stringify(loreData)));
-
-  if (!loreData[category]) {
-    console.error(`Category '${category}' not found in lore cache.`);
-    currentLoreEntry.value = null;
-    loreDialogVisible.value = true;
-    return;
-  }
-
-  // 使用转换后的大写 key 进行查找
-  const entry = loreData[category]?.[key]; 
+  // 直接使用原始的、大小写敏感的 key 进行查找
+  const entry = loreData[category]?.[key];
+  
   if (entry) {
     currentLoreEntry.value = entry;
   } else {
+    // 这个 log 现在非常有用，能立刻告诉我们哪个 key 不匹配
     console.error(`Key '${key}' not found in category '${category}'.`);
     currentLoreEntry.value = null;
   }
+  
   loreDialogVisible.value = true;
 };
 const fetchRelationshipData = async () => {

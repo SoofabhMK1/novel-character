@@ -4,7 +4,10 @@
       <div class="header-content">
         <!-- Logo / Title -->
         <div class="logo-area">
-          <h2 class="logo-title">角色管理面板</h2>
+          <router-link to="/" class="logo-link">
+            <img src="/images/logo.png" alt="App Logo" class="logo-image" />
+            <h2 class="logo-title">角色管理面板</h2>
+          </router-link>
         </div>
 
         <!-- Navigation Menu -->
@@ -20,6 +23,7 @@
         >
           <el-menu-item index="/">仪表盘</el-menu-item>
           <el-menu-item index="/characters">角色列表</el-menu-item>
+          <el-menu-item index="/lore">设定集</el-menu-item>
         </el-menu>
       </div>
     </el-header>
@@ -41,6 +45,9 @@ const activeIndex = computed(() => {
   // 让 "角色列表" 相关的页面也能高亮 "角色列表" 菜单
   if (route.path.startsWith('/characters')) {
     return '/characters';
+  }
+  if (route.path.startsWith('/lore')) {
+    return '/lore';
   }
   return route.path;
 });
@@ -68,13 +75,26 @@ const activeIndex = computed(() => {
 }
 
 .logo-area {
-  margin-right: 40px; /* Logo 和菜单之间的固定间距 */
+  margin-right: 40px;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none; /* 移除链接下划线 */
+  color: inherit; /* 继承父元素的文字颜色 */
+}
+
+.logo-image {
+  height: 40px; /* 关键：控制 Logo 的高度 */
+  width: auto; /* 宽度自适应 */
+  margin-right: 12px; /* Logo 和文字之间的间距 */
 }
 
 .logo-title {
   margin: 0;
   font-weight: 500;
-  white-space: nowrap; /* 防止标题换行 */
+  white-space: nowrap;
 }
 
 .header-menu {

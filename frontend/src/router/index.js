@@ -33,6 +33,11 @@ const routes = [
     name: 'CharacterEdit',
     component: () => import('../views/CharacterFormView.vue'),
   },
+  {
+    path: '/lore',
+    name: 'LoreManager',
+    component: () => import('../views/LoreManagerView.vue'),
+  },
 ];
 
 // 创建路由实例

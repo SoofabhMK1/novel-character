@@ -91,12 +91,27 @@ export default {
   getEnums() {
     return apiClient.get('/utils/enums');
   },
+  // =======================================================
+  // ==        完整的设定集 (Lore) CRUD API 调用          ==
+  // =======================================================
+  
   getLoreEntries(category) {
-    // 如果提供了 category，则按类别筛选
+    let url = '/lore/';
     if (category) {
-      return apiClient.get(`/lore/?category=${category}`);
+      url += `?category=${category}`;
     }
-    // 否则获取全部
-    return apiClient.get('/lore/');
+    return apiClient.get(url);
+  },
+  
+  createLoreEntry(loreData) {
+    return apiClient.post('/lore/', loreData);
+  },
+
+  updateLoreEntry(loreId, loreData) {
+    return apiClient.put(`/lore/${loreId}`, loreData);
+  },
+
+  deleteLoreEntry(loreId) {
+    return apiClient.delete(`/lore/${loreId}`);
   },
 };
