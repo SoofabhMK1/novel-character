@@ -25,6 +25,8 @@ class Settings(BaseSettings):
 
     DEEPSEEK_API_KEY: Optional[str] = None
 
+    GCLI_API_KEY: Optional[str] = None
+
     @model_validator(mode='after')
     def assemble_db_connection(self) -> 'Settings':
         """

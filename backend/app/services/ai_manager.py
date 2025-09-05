@@ -2,11 +2,12 @@ from enum import Enum
 from typing import List
 from fastapi import HTTPException
 
-from app.services import gemini_service, deepseek_service
+from app.services import gemini_service, deepseek_service, gcli_service
 
 class AIServiceProvider(str, Enum):
     GEMINI = "gemini"
     DEEPSEEK = "deepseek"
+    GCLI = "gcli"
 
 def get_available_providers() -> List[str]: # <-- 修改返回类型提示为 List[str]
     """
@@ -23,6 +24,8 @@ def get_available_providers() -> List[str]: # <-- 修改返回类型提示为 Li
         # ==         关键修正：返回枚举的 .value (字符串)        ==
         # =======================================================
         providers.append(AIServiceProvider.DEEPSEEK.value)
+    if gcli_service.is_gcli_configured():
+        providers.append(AIServiceProvider.GCLI.value)
     return providers
 
 def generate_character_profile(user_prompt: str, provider: AIServiceProvider) -> dict:
@@ -37,5 +40,7 @@ def generate_character_profile(user_prompt: str, provider: AIServiceProvider) ->
         return gemini_service.generate_character_profile(user_prompt)
     elif provider == AIServiceProvider.DEEPSEEK:
         return deepseek_service.generate_character_profile(user_prompt)
+    elif provider == AIServiceProvider.GCLI:
+        return gcli_service.generate_character_profile(user_prompt)
     
     raise HTTPException(status_code=500, detail="An unknown error occurred in the AI manager.")
