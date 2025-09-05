@@ -31,7 +31,8 @@ def get_character_profile_json_schema() -> str:
     "measurements": {{
         "bust_cm": "integer (Optional, Number only)",
         "waist_cm": "integer (Optional, Number only)",
-        "hip_cm": "integer (Optional, Number only)"
+        "hip_cm": "integer (Optional, Number only)",
+        "breast_size": "string (Required only if the character is female, e.g., 'A', 'B', 'C')"
     }},
     "personality_details": {{
         "core_traits": ["string", "... (An array of 5-7 key personality adjectives. Must be in CHINESE. Example: ['聪慧', '果断'])"],
@@ -43,7 +44,8 @@ def get_character_profile_json_schema() -> str:
         "hair": "string (Description of hair color and style. Must be in CHINESE.)",
         "eyes": "string (Description of eye color and shape. Must be in CHINESE.)",
         "skin_tone": "string (Description of skin tone. Must be in CHINESE.)",
-        "distinguishing_features": "string (Scars, tattoos, etc. Must be in CHINESE.)"
+        "distinguishing_features": "string (Scars, tattoos, etc. Must be in CHINESE.)",
+        "description": "string (A brief description of the character, do not include infos that we already know of! Must be in CHINESE.)"
     }},
     "background_details": {{
         "hometown": "string (Optional, Where they grew up. Must be in CHINESE.)",

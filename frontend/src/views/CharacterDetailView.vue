@@ -6,9 +6,6 @@
       </template>
       <template #extra>
         <div class="action-buttons-header">
-          <!-- ============================================== -->
-          <!-- ==            为按钮添加图标                == -->
-          <!-- ============================================== -->
           <el-button @click="openRelationshipDialog" :icon="Connection">管理关系</el-button>
           <router-link :to="`/characters/${characterId}/edit`">
             <el-button type="primary" :icon="Edit">编辑</el-button>
@@ -23,26 +20,30 @@
       <div class="character-image-card">
         <el-card shadow="never">
           <template #header>
+            <!-- 修改图标 -->
             <div class="card-header-with-icon">
-              <el-icon><i-ep-camera-filled /></el-icon>
+              <el-icon><CameraFilled /></el-icon>
               <strong>角色形象</strong>
             </div>
           </template>
-          <el-image 
-            v-if="character.image_url"
-            :src="character.image_url" 
-            fit="cover"
-            class="character-image"
-            :preview-src-list="[character.image_url]" 
-            preview-teleported
-          >
-             <template #error>
-              <div class="image-slot">
-                <el-icon><i-ep-picture /></el-icon>
-              </div>
-            </template>
-          </el-image>
-          <el-empty v-else description="暂无图片" />
+          <template v-if="character.image_url">
+      <el-image 
+        :src="character.image_url" 
+        fit="cover"
+        class="character-image"
+        :preview-src-list="[character.image_url]" 
+        preview-teleported
+      >
+         <template #error>
+          <div class="image-slot">
+            <el-icon><IconPicture /></el-icon>
+          </div>
+        </template>
+      </el-image>
+    </template>
+    <template v-else>
+      <el-empty description="暂无图片" />
+    </template>
         </el-card>
       </div>
 
@@ -50,41 +51,48 @@
       <div class="core-info-card">
         <el-card shadow="never">
           <template #header>
+            <!-- 修改图标 -->
             <div class="card-header-with-icon">
-              <el-icon><i-ep-tickets /></el-icon>
+              <el-icon><Tickets /></el-icon>
               <strong>核心档案</strong>
             </div>
           </template>
-          <!-- ============================================== -->
-          <!-- ==      为 el-descriptions-item 添加图标      == -->
-          <!-- ============================================== -->
           <el-descriptions :column="1" border>
+            <!-- 修改所有 el-descriptions-item 里的图标 -->
             <el-descriptions-item>
-              <template #label><div class="cell-item"><el-icon><i-ep-user /></el-icon>全名</div></template>
+              <template #label><div class="cell-item"><el-icon><User /></el-icon>全名</div></template>
               {{ character.name }}
             </el-descriptions-item>
             <el-descriptions-item>
-              <template #label><div class="cell-item"><el-icon><i-ep-coffee-cup /></el-icon>昵称</div></template>
+              <template #label><div class="cell-item"><el-icon><CoffeeCup /></el-icon>昵称</div></template>
               {{ character.nickname || '无' }}
             </el-descriptions-item>
             <el-descriptions-item>
-              <template #label><div class="cell-item"><el-icon><i-ep-magic-stick /></el-icon>种族</div></template>
+              <template #label><div class="cell-item"><el-icon><MagicStick /></el-icon>种族</div></template>
               <el-link type="primary" @click="showLore('Race', character.race)">{{ character.race }}</el-link>
             </el-descriptions-item>
             <el-descriptions-item>
-              <template #label><div class="cell-item"><el-icon><i-ep-briefcase /></el-icon>职业</div></template>
+              <template #label><div class="cell-item"><el-icon><UserFilled /></el-icon>性别</div></template>
+              {{ character.gender }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label><div class="cell-item"><el-icon><Calendar /></el-icon>年龄</div></template>
+              {{ character.age || '未知' }}
+            </el-descriptions-item>
+            <el-descriptions-item>
+              <template #label><div class="cell-item"><el-icon><Briefcase /></el-icon>职业</div></template>
               {{ character.occupation || '无' }}
             </el-descriptions-item>
             <el-descriptions-item>
-              <template #label><div class="cell-item"><el-icon><i-ep-flag /></el-icon>阵营</div></template>
+              <template #label><div class="cell-item"><el-icon><Flag /></el-icon>阵营</div></template>
               <el-link type="primary" @click="showLore('Alignment', character.alignment)">{{ character.alignment }}</el-link>
             </el-descriptions-item>
             <el-descriptions-item>
-              <template #label><div class="cell-item"><el-icon><i-ep-odometer /></el-icon>状态</div></template>
+              <template #label><div class="cell-item"><el-icon><Odometer /></el-icon>状态</div></template>
               <el-link type="primary" @click="showLore('Status', character.status)">{{ character.status }}</el-link>
             </el-descriptions-item>
             <el-descriptions-item>
-              <template #label><div class="cell-item"><el-icon><i-ep-cold-drink /></el-icon>血统</div></template>
+              <template #label><div class="cell-item"><el-icon><ColdDrink /></el-icon>血统</div></template>
               {{ character.bloodline || '未设定' }}
             </el-descriptions-item>
           </el-descriptions>
@@ -95,11 +103,9 @@
       <div class="detailed-info-card">
         <el-card shadow="never">
           <el-tabs type="border-card">
-            <!-- ============================================== -->
-            <!-- ==         为 el-tab-pane 添加图标          == -->
-            <!-- ============================================== -->
+            <!-- 修改所有 el-tab-pane 里的图标 -->
             <el-tab-pane>
-              <template #label><span class="tab-label"><el-icon><i-ep-cpu /></el-icon> 个性特征</span></template>
+              <template #label><span class="tab-label"><el-icon><Cpu /></el-icon> 个性特征</span></template>
               <el-descriptions :column="1" border>
                 <el-descriptions-item label="核心特质">
                   <el-tag v-for="trait in character.personality_details.core_traits" :key="trait" class="trait-tag" effect="plain">{{ trait }}</el-tag>
@@ -110,21 +116,18 @@
               </el-descriptions>
             </el-tab-pane>
             <el-tab-pane>
-              <template #label><span class="tab-label"><el-icon><i-ep-sugar /></el-icon> 生理特征</span></template>
+              <template #label><span class="tab-label"><el-icon><Sugar /></el-icon> 生理特征</span></template>
                <el-descriptions :column="1" border>
-                <el-descriptions-item label="年龄">{{ character.age || '未知' }}</el-descriptions-item>
                 <el-descriptions-item label="身高">{{ character.height_cm ? `${character.height_cm} cm` : '未知' }}</el-descriptions-item>
                 <el-descriptions-item label="体型">{{ character.build }}</el-descriptions-item>
-                <el-descriptions-item label="性别">{{ character.gender }}</el-descriptions-item>
-            <el-descriptions-item label="尺寸">
-              {{ formattedMeasurements }}
-            </el-descriptions-item>
-            <el-descriptions-item label="特征">{{ character.appearance_details.distinguishing_features }}</el-descriptions-item>
-            <!-- <el-descriptions-item label="当前状态">{{ character.status }}</el-descriptions-item> -->
-            </el-descriptions>
+                <el-descriptions-item label="尺寸">
+                  {{ formattedMeasurements }}
+                </el-descriptions-item>
+                <el-descriptions-item label="特征">{{ character.appearance_details.distinguishing_features }}</el-descriptions-item>
+              </el-descriptions>
             </el-tab-pane>
             <el-tab-pane>
-              <template #label><span class="tab-label"><el-icon><i-ep-collection /></el-icon> 背景故事</span></template>
+              <template #label><span class="tab-label"><el-icon><Collection /></el-icon> 背景故事</span></template>
               <el-descriptions :column="1" border>
                 <el-descriptions-item label="家乡">{{ character.background_details.hometown || '未知' }}</el-descriptions-item>
                 <el-descriptions-item label="关键事件">{{ character.background_details.key_life_events || '无' }}</el-descriptions-item>
@@ -137,37 +140,83 @@
 
     <el-skeleton v-else :rows="15" animated />
 
-    <!-- ============================================== -->
-    <!-- ==         新增：设定详情模态框             == -->
-    <!-- ============================================== -->
+    <!-- 设定详情模态框 -->
     <el-dialog
-      v-model="loreDialogVisible"
-      :title="currentLoreEntry?.name || '设定详情'"
-      width="50%"
+  v-model="loreDialogVisible"
+  :title="currentLoreEntry?.name ? `设定详情 - ${currentLoreEntry.name}` : '设定详情'"
+  width="60%"
+  top="10vh"
+>
+  <div v-if="currentLoreEntry">
+    <!-- 使用 Descriptions 组件展示核心信息 -->
+    <el-descriptions
+      :column="1"
+      border
+      title="核心信息"
     >
-      <div v-if="currentLoreEntry">
-        <p style="white-space: pre-wrap;">{{ currentLoreEntry.description }}</p>
-        <el-divider />
-        <div v-if="currentLoreEntry.attributes && Object.keys(currentLoreEntry.attributes).length > 0">
-          <strong>附加属性:</strong>
-          <ul>
-            <li v-for="(value, key) in currentLoreEntry.attributes" :key="key">
-              <strong>{{ key }}:</strong> {{ Array.isArray(value) ? value.join(', ') : value }}
-            </li>
-          </ul>
-        </div>
-      </div>
-      <el-empty v-else description="暂无该设定的详细信息。" />
-    </el-dialog>
+      <el-descriptions-item>
+        <template #label>
+          <div class="cell-item">
+            <el-icon><InfoFilled /></el-icon>
+            详细描述
+          </div>
+        </template>
+        <!-- 使用 pre-wrap 保留描述中的换行和空格 -->
+        <div style="white-space: pre-wrap;">{{ currentLoreEntry.description }}</div>
+      </el-descriptions-item>
+    </el-descriptions>
 
-    <!-- 关系管理模态框 (保持不变) -->
+    <!-- 使用带标题的分割线来区分附加属性 -->
+    <el-divider content-position="left">
+      <div class="cell-item">
+        <el-icon><List /></el-icon>
+        <span>附加属性</span>
+      </div>
+    </el-divider>
+
+    <!-- 附加属性区域 -->
+    <div v-if="currentLoreEntry.attributes && Object.keys(currentLoreEntry.attributes).length > 0">
+      <el-descriptions :column="2" border>
+        <el-descriptions-item 
+          v-for="(value, key) in currentLoreEntry.attributes" 
+          :key="key"
+        >
+          <template #label><strong>{{ key }}</strong></template>
+          
+          <!-- 如果属性值是数组，使用 Tag 循环展示 -->
+          <template v-if="Array.isArray(value)">
+            <el-tag 
+              v-for="item in value" 
+              :key="item" 
+              effect="plain" 
+              style="margin-right: 5px; margin-bottom: 5px;"
+            >
+              {{ item }}
+            </el-tag>
+          </template>
+          <!-- 否则直接展示文本值 -->
+          <template v-else>
+            {{ value }}
+          </template>
+        </el-descriptions-item>
+      </el-descriptions>
+    </div>
+    <!-- 如果没有附加属性，则显示提示信息 -->
+    <el-empty v-else description="该设定没有附加属性。" :image-size="80" />
+
+  </div>
+  
+  <!-- 如果连设定条目本身都没有，则显示外层空状态 -->
+  <el-empty v-else description="暂无该设定的详细信息。" />
+</el-dialog>
+
+    <!-- 关系管理模态框 -->
     <el-dialog
       v-model="relationshipDialogVisible"
       :title="`管理 '${character?.name}' 的人际关系`"
       width="70%"
       @close="resetNewRelationship"
     >
-      <!-- 添加新关系表单 -->
       <el-card shadow="never" class="add-relationship-card">
         <template #header><strong>添加新关系</strong></template>
         <el-form :model="newRelationship" label-width="80px" inline class="relationship-form">
@@ -204,7 +253,6 @@
         </el-form>
       </el-card>
 
-      <!-- 关系列表 -->
       <el-table :data="relationships" v-loading="loadingRelationships" style="margin-top: 20px;">
         <el-table-column label="关系描述">
           <template #default="scope">
@@ -243,7 +291,27 @@
 import { ref, onMounted, reactive, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import api from '../services/api';
-import { Connection, Edit, Picture as IconPicture } from '@element-plus/icons-vue';
+import { 
+  Connection, 
+  Edit, 
+  CameraFilled,
+  Tickets,
+  User,
+  CoffeeCup,
+  MagicStick,
+  Briefcase,
+  Flag,
+  Odometer,
+  ColdDrink,
+  Cpu,
+  Sugar,
+  Collection,
+  InfoFilled,
+  List,
+  Calendar,
+  UserFilled,
+  Picture as IconPicture // Picture重命名为IconPicture避免与原生冲突
+} from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 
 // --- 基础状态和路由 ---
